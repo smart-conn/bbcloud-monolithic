@@ -18,7 +18,9 @@ var adminAccountSchema = new Schema({
 });
 
 adminAccountSchema.plugin(passportLocalMongoose, {
-  usernameField: 'name'
+  usernameField: 'name',
+  saltField: 'salt',
+  hashField: 'hash'
 });
 
 module.exports = mongoose.model('AdministratorAccount', adminAccountSchema);

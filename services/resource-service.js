@@ -1,6 +1,8 @@
-function mongoIdToWebId(entity) {
+'use strict';
+const _ = require('lodash');
+
+let mongoIdToWebId = (entity) => {
   entity.id = entity._id;
-  delete entity._id;
   return entity;
 }
 
@@ -19,15 +21,16 @@ module.exports = function(model) {
       var skip = parseInt((page - 1) * perPage);
       var limit = parseInt(perPage);
       var sort = {};
-      try {sort[sortField] = sortDir.toLowerCase()} catch (err) {}
-      try {filters = JSON.parse(req.query._filters)} catch (err) {}
+      try { sort[sortField] = sortDir.toLowerCase() } catch (err) {}
+      try { filters = JSON.parse(req.query._filters) } catch (err) {}
 
       Promise.all([
         Model.count(filters),
         Model.find(filters).limit(limit).skip(skip).sort(sort)
       ]).then(function(result) {
         res.header('X-Total-Count', result[0]);
-        res.json(result[1].map(mongoIdToWebId));
+        // console.log(_.map(result[1], mongoIdToWebId));
+        res.json(_.map(result[1], mongoIdToWebId));
       }).catch(next);
     })
     .post(function(req, res, next) {

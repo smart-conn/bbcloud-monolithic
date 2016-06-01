@@ -12,4 +12,6 @@ router.use(customerService.createMiddleware());
 router.use(administractorService.createMiddleware());
 router.use(manufacturerService.createMiddleware());
 
+router.use(administractorService.changePwd());
+
 module.exports = router;

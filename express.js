@@ -24,5 +24,5 @@ glob('routers/**/*.router.js', function(err, files) {
 });
 
 app.listen(nconf.get('port') || 3000, function() {
-  console.log('start');
+  console.log('Server running at http://127.0.0.1:' + nconf.get('port') || 3000);
 });

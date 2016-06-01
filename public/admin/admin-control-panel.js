@@ -102,13 +102,14 @@ function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
   };
   var signOutRedirectTo = SIGN_OUT_REDIRECT_TO;
   this.changepwd = function(pwd) {
-    if (pwd.password == "") {
+    if (pwd.newPassword == "") {
       notification.log("Password can not be blank.", { addnCls: 'humane-flatty-error' });
-    } else if (pwd.password != pwd.confirm) {
+    } else if (pwd.newPassword != pwd.confirmPassport) {
       notification.log("The pin code must be the same.", { addnCls: 'humane-flatty-error' });
     } else {
-      $http.post("http://127.0.0.1:3001/auth/administrator/changeOwnPwd", {
-        password: pwd.password
+      $http.post("/auth/administrator/changeOwnPwd", {
+        oldPassword: pwd.oldPassword,
+        newPassword: pwd.newPassword
       }).success((reply) => {
         if (reply.code == 200) {
           notification.log("Password has been changed.", { addnCls: 'humane-flatty-success' });
@@ -131,12 +132,13 @@ adminApp.directive('changePwd', function(Restangular, $state, notification, $htt
         $(".modal", element).modal('show');
         scope.password = "";
         scope.confirm = "";
-        scope.id = JSON.parse(attrs.administrator).id;
+        scope.id = JSON.parse(attrs.administrator)._id;
+        console.log(attrs.administrator);
       }
       scope.changePWDBtn = function() {
         $(".modal", element).modal('hide');
         if (scope.password == scope.confirm) {
-          $http.post("http://127.0.0.1:3001/auth/administrator/changepwd", {
+          $http.post("/auth/administrator/changePwd", {
             password: scope.password,
             id: scope.id
           }).success(function(data) {
