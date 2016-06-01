@@ -5,31 +5,9 @@ function manufacturerConfig(nga, admin) {
   manufacturer.listView()
     .title('厂商管理')
     .fields([
-      nga.field('name').label('名称'),
-      nga.field('status', 'choice').label('审核状态')
-      .choices([
-        { label: '审核通过', value: 'passed' },
-        { label: '审核失败', value: 'failed' },
-        { label: '待审核', value: 'pending' }
-      ])
+      nga.field('name').label('名称')
     ])
     .actions(['batch'])
-    .listActions(['show', 'delete']);
-
-  manufacturer.creationView()
-    .fields([
-      nga.field('name').label('名称')
-    ]);
-
-  manufacturer.editionView()
-    .fields([
-      nga.field('name').label('名称'),
-      nga.field('status', 'choice').label('审核状态')
-      .choices([
-        { label: '审核通过', value: 'passed' },
-        { label: '审核失败', value: 'failed' },
-        { label: '待审核', value: 'pending' }
-      ])
-    ]);
+    .listActions(['delete']);
 
 }

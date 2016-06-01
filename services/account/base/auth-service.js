@@ -7,6 +7,7 @@ module.exports = class AuthService {
   createMiddleware() {
     var router = require('express').Router();
     var passport = require('passport');
+    console.log(this.name);
     router.post(`/${this.name}/auth/signup`, this._signupRouter.bind(this));
     router.post(`/${this.name}/auth/login`, passport.authenticate(this.name, {session: false}), this._issueTokenRouter.bind(this));
     return router;

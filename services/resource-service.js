@@ -1,7 +1,8 @@
 function mongoIdToWebId(entity) {
-  entity.id = entity._id;
-  delete entity._id;
-  return entity;
+  var o = entity.toObject();
+  o.id = o._id.toString();
+  delete o._id;
+  return o;
 }
 
 module.exports = function(model) {
