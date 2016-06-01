@@ -1,0 +1,15 @@
+{
+  "port": 3000,
+  "mongodb": "mongodb://127.0.0.1/",
+  "secret": "secret",
+  "wechat": {
+    "appId": "APP_ID",
+    "appSecret": "APP_SECRET",
+    "client": "wechat",
+    "callbackUrl": "callbackurl",
+    "scope": "snapi_userinfo",
+    "state": "state",
+    "debug": false,
+    "airkissKey": "airkisskey"
+  }
+}
