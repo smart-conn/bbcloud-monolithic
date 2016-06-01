@@ -1,35 +1,32 @@
-var LOGIN_STATE_NAME = 'signIn';
-var LOGOUT_STATE_NAME = 'signOut';
+var LOGIN_STATE_NAME = 'login';
+var LOGOUT_STATE_NAME = 'logout';
+var SIGNUP_STATE_NAME = 'signup';
 
 var LOGIN_REDIRECT_TO = '/dashboard';
-var LOGOUT_REDIRECT_TO = '/sign-in';
+var LOGOUT_REDIRECT_TO = '/login';
 
 var adminApp = angular.module('adminControlPanel', [
-    'ng-admin',
-    'satellizer'
-  ]).config(adminControlPanelConfig)
-  .config(signInConfig)
+  'ng-admin',
+  'satellizer'
+]).config(manufacturerControlPanelConfig)
+  .config(routeConfig)
+  .config(authConfig)
   .run(anonymousRedirect)
-  .controller('SignInController', SignInController)
+  .controller('AuthController', AuthController)
   .controller('ChangeOwnPwdController', ChangeOwnPwdController)
 
-function adminControlPanelConfig(NgAdminConfigurationProvider) {
+function manufacturerControlPanelConfig(NgAdminConfigurationProvider) {
 
   var nga = NgAdminConfigurationProvider;
-  var admin = nga.application('BBCloud 后台管理')
+  var admin = nga.application('我是厂家')
     .baseApiUrl('http://127.0.0.1:3000/api/');
 
-  admin.addEntity(nga.entity('administrator-accounts'));
-  admin.addEntity(nga.entity('customer-accounts'));
-  admin.addEntity(nga.entity('roles'));
-  admin.addEntity(nga.entity('permissions'));
+  admin.addEntity(nga.entity('batches'));
+  admin.addEntity(nga.entity('models'));
   admin.addEntity(nga.entity('manufacturers'));
 
-  administratorAccountConfig(nga, admin);
-  customerAccountConfig(nga, admin);
-
-  roleConfig(nga, admin);
-  permissionConfig(nga, admin);
+  batchConfig(nga, admin);
+  modelConfig(nga, admin);
   manufacturerConfig(nga, admin);
 
   admin.menu(menuConfig(nga, admin));
@@ -39,52 +36,79 @@ function adminControlPanelConfig(NgAdminConfigurationProvider) {
   nga.configure(admin);
 }
 
-function signInConfig($stateProvider, $authProvider) {
-  var signInStateName = LOGIN_STATE_NAME;
-  var signOutStateName = LOGOUT_STATE_NAME;
-  var signOutRedirectTo = LOGOUT_REDIRECT_TO;
+function authConfig($authProvider) {
+  $authProvider.tokenPrefix = 'manufacturer';
+  $authProvider.baseUrl = '/manufacturer/';
+}
 
-  $authProvider.tokenPrefix = 'administrator';
-  $authProvider.baseUrl = '/administrator/';
+function routeConfig($stateProvider) {
+  var loginStateName = LOGIN_STATE_NAME;
+  var logoutStateName = LOGOUT_STATE_NAME;
+  var logoutRedirectTo = LOGOUT_REDIRECT_TO;
+  var signupStateName = SIGNUP_STATE_NAME;
+
   $stateProvider.state("changePwd", {
     url: '/change-password',
     templateUrl: 'views/change-password.html'
   });
-  $stateProvider.state(signInStateName, {
-    url: '/sign-in',
-    templateUrl: 'views/sign-in.html',
-    controller: 'SignInController',
-    controllerAs: 'signInCtrl'
+
+  $stateProvider.state(loginStateName, {
+    url: '/login',
+    templateUrl: 'views/login.html',
+    controller: 'AuthController',
+    controllerAs: 'authCtrl'
   });
-  $stateProvider.state(signOutStateName, {
-    url: '/sign-out',
+
+  $stateProvider.state(signupStateName, {
+    url: '/signup',
+    templateUrl: 'views/signup.html',
+    controller: 'AuthController',
+    controllerAs: 'authCtrl'
+  });
+
+  $stateProvider.state(logoutStateName, {
+    url: '/logout',
     controller: function($auth, $location) {
       $auth.logout();
-      $location.path(signOutRedirectTo);
+      $location.path(logoutRedirectTo);
     }
   });
 }
 
 function anonymousRedirect($rootScope, $state, $auth) {
-  var signInStateName = LOGIN_STATE_NAME;
-  var signOutStateName = LOGOUT_STATE_NAME;
+  var loginStateName = LOGIN_STATE_NAME;
+  var logoutStateName = LOGOUT_STATE_NAME;
+  var signupStateName = SIGNUP_STATE_NAME;
   $rootScope.$on('$stateChangeStart', function(evt, toState) {
     if (!$auth.isAuthenticated()) {
-      if (toState.name === signInStateName) return;
-      if (toState.name === signOutStateName) return;
+      if (toState.name === loginStateName) return;
+      if (toState.name === logoutStateName) return;
+      if (toState.name === signupStateName) return;
+
       console.log('not login, redirect to signin');
       evt.preventDefault();
-      return $state.go(signInStateName);
+      return $state.go(loginStateName);
     }
   });
 }
 
-function SignInController($auth, $location) {
-  var signInRedirectTo = LOGIN_REDIRECT_TO;
-  this.signIn = function(credentials) {
+function AuthController($auth, $location) {
+  var loginRedirectTo = LOGIN_REDIRECT_TO;
+
+  this.login = function(credentials) {
     $auth.login(credentials)
       .then(function() {
-        $location.path(signInRedirectTo);
+        $location.path(loginRedirectTo);
+      });
+  };
+
+  this.signup = function(credentials) {
+    $auth.signup(credentials)
+      .then(function() {
+        return $auth.login(credentials);
+      })
+      .then(function() {
+        $location.path(loginRedirectTo);
       });
   };
 }
@@ -96,14 +120,13 @@ function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
   };
   var signOutRedirectTo = LOGOUT_REDIRECT_TO;
   this.changepwd = function(pwd) {
-    if (pwd.newPassword == "") {
+    if (pwd.password == "") {
       notification.log("Password can not be blank.", { addnCls: 'humane-flatty-error' });
-    } else if (pwd.newPassword != pwd.confirmPassport) {
+    } else if (pwd.password != pwd.confirm) {
       notification.log("The pin code must be the same.", { addnCls: 'humane-flatty-error' });
     } else {
-      $http.post("/auth/administrator/changeOwnPwd", {
-        oldPassword: pwd.oldPassword,
-        newPassword: pwd.newPassword
+      $http.post("http://127.0.0.1:3001/auth/administrator/changeOwnPwd", {
+        password: pwd.password
       }).success((reply) => {
         if (reply.code == 200) {
           notification.log("Password has been changed.", { addnCls: 'humane-flatty-success' });
@@ -126,13 +149,12 @@ adminApp.directive('changePwd', function(Restangular, $state, notification, $htt
         $(".modal", element).modal('show');
         scope.password = "";
         scope.confirm = "";
-        scope.id = JSON.parse(attrs.administrator)._id;
-        console.log(attrs.administrator);
+        scope.id = JSON.parse(attrs.administrator).id;
       }
       scope.changePWDBtn = function() {
         $(".modal", element).modal('hide');
         if (scope.password == scope.confirm) {
-          $http.post("/auth/administrator/changePwd", {
+          $http.post("http://127.0.0.1:3001/auth/administrator/changepwd", {
             password: scope.password,
             id: scope.id
           }).success(function(data) {

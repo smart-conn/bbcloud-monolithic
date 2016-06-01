@@ -1,6 +1,6 @@
-function customerConfig(nga, admin) {
+function customerAccountConfig(nga, admin) {
 
-  var customer = admin.getEntity('customers');
+  var customer = admin.getEntity('customer-accounts');
 
   customer.listView()
     .title('消费者账户')

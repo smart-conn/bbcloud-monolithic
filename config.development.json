@@ -5,7 +5,6 @@
   "wechat": {
     "appId": "APP_ID",
     "appSecret": "APP_SECRET",
-    "client": "wechat",
     "callbackUrl": "callbackurl",
     "scope": "snapi_userinfo",
     "state": "state",

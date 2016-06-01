@@ -5,11 +5,11 @@ var roleSchema = new Schema({
   name: String,
   permissions: [{
     type: Schema.Types.ObjectId,
-    ref: 'permission'
+    ref: 'Permission'
   }],
   adminAccounts: [{
     type: Schema.Types.ObjectId,
-    ref: 'AdminAccount'
+    ref: 'AdministratorAccount'
   }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: Date,

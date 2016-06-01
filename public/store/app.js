@@ -26,6 +26,15 @@ function defineRoles(RoleStore, $auth) {
 function authConfig($authProvider) {
   $authProvider.tokenPrefix = 'customer';
   $authProvider.baseUrl = '/customer/';
+  $authProvider.oauth2({
+    name: 'wechat',
+    url: '/auth/wechat',
+    redirectUri: encodeURIComponent(window.location.origin),
+    appid: 'wx42b2746da8e4f318',
+    scope: 'snsapi_login',
+    defaultUrlParams: ['response_type', 'appid', 'redirect_uri', 'scope'],
+    authorizationEndpoint: 'https://open.weixin.qq.com/connect/qrconnect'
+  });
 }
 
 function routeConfig($stateProvider, $urlRouterProvider) {

@@ -1,6 +1,6 @@
-function administratorConfig(nga, admin) {
+function administratorAccountConfig(nga, admin) {
 
-  var administrator = admin.getEntity('administrators');
+  var administrator = admin.getEntity('administrator-accounts');
   var role = admin.getEntity('roles');
 
   administrator.listView()

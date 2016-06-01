@@ -13,10 +13,19 @@ var jwtOpts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer')
 };
 
-var wechatOpts = {
+var wechatClientOpts = {
   appID: nconf.get('wechat:appId'),
   appSecret: nconf.get('wechat:appSecret'),
-  client: nconf.get('wechat:client'),
+  client: 'wechat',
+  callbackURL: nconf.get('wechat:callbackUrl'),
+  scope: nconf.get('wechat:scope'),
+  state: nconf.get('wechat:state')
+};
+
+var wechatWebOpts = {
+  appID: nconf.get('wechat:appId'),
+  appSecret: nconf.get('wechat:appSecret'),
+  client: 'web',
   callbackURL: nconf.get('wechat:callbackUrl'),
   scope: nconf.get('wechat:scope'),
   state: nconf.get('wechat:state')
@@ -25,7 +34,8 @@ var wechatOpts = {
 passport.use('customer', CustomerAccount.createStrategy());
 passport.use('administrator', AdministratorAccount.createStrategy());
 passport.use('manufacturer', ManufacturerAccount.createStrategy());
-passport.use(new WeChatStrategy(wechatOpts, wechatVerify));
+passport.use('wechat-web', new WeChatStrategy(wechatWebOpts, wechatVerify));
+passport.use('wechat-client', new WeChatStrategy(wechatClientOpts, wechatVerify));
 passport.use(new JwtStrategy(jwtOpts, jwtVerify));
 
 function wechatVerify(accessToken, refreshToken, profile, done) {
