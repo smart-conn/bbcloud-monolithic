@@ -13,7 +13,15 @@ var adminApp = angular.module('adminControlPanel', [
   .config(authConfig)
   .run(anonymousRedirect)
   .controller('AuthController', AuthController)
-  .controller('ManufacturerController', ManufacturerController);
+  .controller('ManufacturerController', ManufacturerController)
+  .controller('ChangeOwnPwdController', ChangeOwnPwdController)
+  .controller('UserMenu', function ($scope, $auth, $http) {
+    $http.get("/api/manufacturer-accounts/" + $auth.getPayload().sub).success(data => {
+      this.name = data.email;
+    }).catch(data => {
+      this.name = "未知用户";
+    });
+  });
 
 function manufacturerControlPanelConfig(NgAdminConfigurationProvider) {
 
@@ -65,7 +73,7 @@ function routeConfig($stateProvider) {
 
   $stateProvider.state(logoutStateName, {
     url: '/logout',
-    controller: function($auth, $location) {
+    controller: function ($auth, $location) {
       $auth.logout();
       $location.path(logoutRedirectTo);
     }
@@ -83,7 +91,7 @@ function anonymousRedirect($rootScope, $state, $auth) {
   var loginStateName = LOGIN_STATE_NAME;
   var logoutStateName = LOGOUT_STATE_NAME;
   var signupStateName = SIGNUP_STATE_NAME;
-  $rootScope.$on('$stateChangeStart', function(evt, toState) {
+  $rootScope.$on('$stateChangeStart', function (evt, toState) {
     if (!$auth.isAuthenticated()) {
       if (toState.name === loginStateName) return;
       if (toState.name === logoutStateName) return;
@@ -96,22 +104,24 @@ function anonymousRedirect($rootScope, $state, $auth) {
   });
 }
 
-function AuthController($auth, $location) {
+function AuthController($auth, $location, notification) {
   var loginRedirectTo = LOGIN_REDIRECT_TO;
 
-  this.login = function(credentials) {
+  this.login = function (credentials) {
     $auth.login(credentials)
-      .then(function() {
+      .then(function () {
         $location.path(loginRedirectTo);
+      }).catch(function (data) {
+        notification.log("Wrong Password.", { addnCls: 'humane-flatty-error' });
       });
   };
 
-  this.signup = function(credentials) {
+  this.signup = function (credentials) {
     $auth.signup(credentials)
-      .then(function() {
+      .then(function () {
         return $auth.login(credentials);
       })
-      .then(function() {
+      .then(function () {
         $location.path(loginRedirectTo);
       });
   };
@@ -121,25 +131,54 @@ function ManufacturerController($http, $auth, $location) {
 
   var self = this;
 
-  $http.get('/api/manufacturers').success(function(result) {
+  $http.get('/api/manufacturers').success(function (result) {
     self.manufacturers = result;
   });
 
-  this.select = function(id) {
-    $http.get('/manufacturer/' + id + '/select').success(function(result) {
+  this.select = function (id) {
+    $http.get('/manufacturer/' + id + '/select').success(function (result) {
       $auth.setToken(result.token);
       $location.path(LOGIN_REDIRECT_TO);
-    }).error(function() {
+    }).error(function () {
       alert('失败');
     });
   };
 
-  this.createNewManufacturer = function(entity) {
-    $http.post('/api/manufacturers', entity).success(function() {
+  this.createNewManufacturer = function (entity) {
+    $http.post('/api/manufacturers', entity).success(function () {
       alert('成功');
-    }).error(function() {
+    }).error(function () {
       alert('失败');
     });
   };
 
+}
+
+function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
+  $scope.password = {
+    oldPassword: "",
+    newPassword: "",
+    confirmPassport: ""
+  };
+  var signOutRedirectTo = LOGOUT_REDIRECT_TO;
+  this.changepwd = function (pwd) {
+    if (pwd.newPassword == "") {
+      notification.log("Password can not be blank.", { addnCls: 'humane-flatty-error' });
+    } else if (pwd.newPassword != pwd.confirmPassport) {
+      notification.log("The pin code must be the same.", { addnCls: 'humane-flatty-error' });
+    } else {
+      $http.post("/auth/manufacturer/changeOwnPwd", {
+        oldPassword: pwd.oldPassword,
+        newPassword: pwd.newPassword
+      }).success((reply) => {
+        if (reply.code == 200) {
+          notification.log("Password has been changed.", { addnCls: 'humane-flatty-success' });
+          $auth.logout();
+          $location.path(signOutRedirectTo);
+        } else {
+          notification.log("Change Password error.", { addnCls: 'humane-flatty-error' });
+        }
+      });
+    }
+  }
 }

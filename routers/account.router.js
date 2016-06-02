@@ -14,6 +14,7 @@ router.use(administractorService.createMiddleware());
 router.use(manufacturerService.createMiddleware());
 
 router.use(administractorService.changePwd());
+router.use(manufacturerService.changePwd());
 
 router.get('/manufacturer/:id/select', passport.authenticate('jwt', { session: false }), function(req, res, next) {
   var realm = req.user.realm;

@@ -24,7 +24,6 @@ module.exports = class AdministratorService extends AuthService {
   changePwd() {
     let router = require('express').Router();
     router.post('/auth/administrator/changePwd', (req, res) => {
-      console.log(req.body);
       let id = req.body.id;
       let password = req.body.password;
 

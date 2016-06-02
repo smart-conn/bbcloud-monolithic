@@ -7,7 +7,6 @@ module.exports = class AuthService {
   createMiddleware() {
     var router = require('express').Router();
     var passport = require('passport');
-    console.log(this.name);
     router.post(`/${this.name}/auth/signup`, this._signupRouter.bind(this));
     router.post(`/${this.name}/auth/login`, passport.authenticate(this.name, { session: false }), this._issueTokenRouter.bind(this));
     return router;
@@ -24,7 +23,7 @@ module.exports = class AuthService {
       extras = extras || {};
       extras.realm = this.name;
 
-      jwt.sign(extras, secret, { subject }, function(err, token) {
+      jwt.sign(extras, secret, { subject }, function (err, token) {
         if (err) return next(err);
         res.json({ token });
       });
@@ -36,7 +35,7 @@ module.exports = class AuthService {
     var password = this.getPasswordFromRequest(req.body);
     var Model = this.model;
 
-    Model.register(new Model(model), password, function(err) {
+    Model.register(new Model(model), password, function (err) {
       if (err) return next(err);
       res.json({ msg: 'ok' });
     });
