@@ -6,6 +6,10 @@ var batchSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Model'
   },
+  manufacturer: {
+    type: Schema.Types.ObjectId,
+    ref: 'Manufacturer'
+  },
   amount: Number,
   createdAt: {
     type: Date,

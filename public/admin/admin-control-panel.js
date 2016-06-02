@@ -21,16 +21,22 @@ function adminControlPanelConfig(NgAdminConfigurationProvider) {
 
   admin.addEntity(nga.entity('administrator-accounts'));
   admin.addEntity(nga.entity('customer-accounts'));
+
   admin.addEntity(nga.entity('roles'));
   admin.addEntity(nga.entity('permissions'));
+
   admin.addEntity(nga.entity('manufacturers'));
+  admin.addEntity(nga.entity('batches'));
+  admin.addEntity(nga.entity('models'));
 
   administratorAccountConfig(nga, admin);
   customerAccountConfig(nga, admin);
 
   roleConfig(nga, admin);
   permissionConfig(nga, admin);
+
   manufacturerConfig(nga, admin);
+  batchConfig(nga, admin);
 
   admin.menu(menuConfig(nga, admin));
   admin.header(headerConfig());

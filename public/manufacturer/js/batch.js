@@ -6,6 +6,7 @@ function batchConfig(nga, admin) {
   batch.listView()
     .title('批次管理')
     .fields([
+      nga.field('id').label('订单号'),
       nga.field('model', 'reference').label('型号')
         .targetEntity(model)
         .targetField(nga.field('name')),
@@ -20,7 +21,7 @@ function batchConfig(nga, admin) {
       nga.field('model', 'reference').label('型号')
         .targetEntity(model)
         .targetField(nga.field('name')),
-      nga.field('count', 'number').label('数量')
+      nga.field('amount', 'number').label('数量')
     ]);
 
   batch.showView()
@@ -28,7 +29,7 @@ function batchConfig(nga, admin) {
       nga.field('model', 'reference').label('型号')
         .targetEntity(model)
         .targetField(nga.field('name')),
-      nga.field('count', 'number').label('数量'),
+      nga.field('amount', 'number').label('数量'),
       nga.field('createdAt').label('下单日期')
     ]);
 

@@ -14,6 +14,14 @@ router.use('/api/roles', resource('Role'));
 router.use('/api/permissions', resource('Permission'));
 
 router.use('/api/manufacturers', resource('Manufacturer'));
+router.use('/api/batches', passport.authenticate('jwt', {session: false}));
+router.use('/api/batches', function(req, res, next) {
+  if (req.user.realm === 'manufacturer') {
+    try {req.body.manufacturer = req.user.manufacturer;} catch(err) {}
+    console.log('add addition ===========');
+  }
+  next();
+});
 router.use('/api/batches', resource('Batch'));
 router.use('/api/models', resource('Model'));
 
