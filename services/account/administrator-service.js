@@ -13,7 +13,6 @@ module.exports = class AdministratorService extends AuthService {
   }
 
   createTokenExtras(user, done) {
-<<<<<<< HEAD
     this.model.findById(user.id).populate({
       path: 'role',
       populate: {path: 'permissions', select: 'code'}
@@ -23,9 +22,6 @@ module.exports = class AdministratorService extends AuthService {
       }).join(',');
       done(null, {scope});
     }).catch(done);
-=======
-    done();
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
   }
 
   getModelDataFromRequest(body) {
@@ -36,10 +32,6 @@ module.exports = class AdministratorService extends AuthService {
   changePwd() {
     let router = require('express').Router();
     router.post('/auth/administrator/changePwd', (req, res) => {
-<<<<<<< HEAD
-=======
-      console.log(req.body);
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
       let id = req.body.id;
       let password = req.body.password;
 

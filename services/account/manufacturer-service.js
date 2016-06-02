@@ -1,13 +1,8 @@
 'use strict';
 
-<<<<<<< HEAD
 const AuthService = require('./base/auth-service');
 const mongoose = require('mongoose');
 const passport = require('passport');
-=======
-var AuthService = require('./base/auth-service');
-var mongoose = require('mongoose');
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
 
 module.exports = class ManufacturerService extends AuthService {
 
@@ -18,19 +13,14 @@ module.exports = class ManufacturerService extends AuthService {
   }
 
   createTokenExtras(user, done) {
-<<<<<<< HEAD
     this.model.findById(user.id).then(function(manufacturerAccount) {
       var manufacturer = manufacturerAccount.manufacturer.toString();
       done(null, {manufacturer});
     }).catch(done);
-=======
-    done();
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
   }
 
   getModelDataFromRequest(body) {
     var email = body.email;
-<<<<<<< HEAD
     return { email };
   }
 
@@ -73,9 +63,6 @@ module.exports = class ManufacturerService extends AuthService {
     });
 
     return router;
-=======
-    return {email};
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
   }
 
 }

@@ -13,7 +13,6 @@ var adminApp = angular.module('adminControlPanel', [
   .config(authConfig)
   .run(anonymousRedirect)
   .controller('AuthController', AuthController)
-<<<<<<< HEAD
   .controller('ManufacturerController', ManufacturerController)
   .controller('ChangeOwnPwdController', ChangeOwnPwdController)
   .controller('UserMenu', function ($scope, $auth, $http) {
@@ -23,9 +22,6 @@ var adminApp = angular.module('adminControlPanel', [
       this.name = "未知用户";
     });
   });
-=======
-  .controller('ManufacturerController', ManufacturerController);
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
 
 function manufacturerControlPanelConfig(NgAdminConfigurationProvider) {
 
@@ -77,11 +73,7 @@ function routeConfig($stateProvider) {
 
   $stateProvider.state(logoutStateName, {
     url: '/logout',
-<<<<<<< HEAD
     controller: function ($auth, $location) {
-=======
-    controller: function($auth, $location) {
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
       $auth.logout();
       $location.path(logoutRedirectTo);
     }
@@ -99,11 +91,7 @@ function anonymousRedirect($rootScope, $state, $auth) {
   var loginStateName = LOGIN_STATE_NAME;
   var logoutStateName = LOGOUT_STATE_NAME;
   var signupStateName = SIGNUP_STATE_NAME;
-<<<<<<< HEAD
   $rootScope.$on('$stateChangeStart', function (evt, toState) {
-=======
-  $rootScope.$on('$stateChangeStart', function(evt, toState) {
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
     if (!$auth.isAuthenticated()) {
       if (toState.name === loginStateName) return;
       if (toState.name === logoutStateName) return;
@@ -116,7 +104,6 @@ function anonymousRedirect($rootScope, $state, $auth) {
   });
 }
 
-<<<<<<< HEAD
 function AuthController($auth, $location, notification) {
   var loginRedirectTo = LOGIN_REDIRECT_TO;
 
@@ -135,24 +122,6 @@ function AuthController($auth, $location, notification) {
         return $auth.login(credentials);
       })
       .then(function () {
-=======
-function AuthController($auth, $location) {
-  var loginRedirectTo = LOGIN_REDIRECT_TO;
-
-  this.login = function(credentials) {
-    $auth.login(credentials)
-      .then(function() {
-        $location.path(loginRedirectTo);
-      });
-  };
-
-  this.signup = function(credentials) {
-    $auth.signup(credentials)
-      .then(function() {
-        return $auth.login(credentials);
-      })
-      .then(function() {
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
         $location.path(loginRedirectTo);
       });
   };
@@ -162,7 +131,6 @@ function ManufacturerController($http, $auth, $location) {
 
   var self = this;
 
-<<<<<<< HEAD
   $http.get('/api/manufacturers').success(function (result) {
     self.manufacturers = result;
   });
@@ -172,38 +140,19 @@ function ManufacturerController($http, $auth, $location) {
       $auth.setToken(result.token);
       $location.path(LOGIN_REDIRECT_TO);
     }).error(function () {
-=======
-  $http.get('/api/manufacturers').success(function(result) {
-    self.manufacturers = result;
-  });
-
-  this.select = function(id) {
-    $http.get('/manufacturer/' + id + '/select').success(function(result) {
-      $auth.setToken(result.token);
-      $location.path(LOGIN_REDIRECT_TO);
-    }).error(function() {
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
       alert('失败');
     });
   };
 
-<<<<<<< HEAD
   this.createNewManufacturer = function (entity) {
     $http.post('/api/manufacturers', entity).success(function () {
       alert('成功');
     }).error(function () {
-=======
-  this.createNewManufacturer = function(entity) {
-    $http.post('/api/manufacturers', entity).success(function() {
-      alert('成功');
-    }).error(function() {
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
       alert('失败');
     });
   };
 
 }
-<<<<<<< HEAD
 
 function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
   $scope.password = {
@@ -233,5 +182,3 @@ function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
     }
   }
 }
-=======
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70

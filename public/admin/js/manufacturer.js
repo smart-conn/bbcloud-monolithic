@@ -5,7 +5,6 @@ function manufacturerConfig(nga, admin) {
   manufacturer.listView()
     .title('厂商管理')
     .fields([
-<<<<<<< HEAD
       nga.field('name').label('名称'),
       nga.field('code').label('编码')
     ])
@@ -22,11 +21,5 @@ function manufacturerConfig(nga, admin) {
       nga.field('name').label('名称'),
       nga.field('code').label('编码')
     ]);
-=======
-      nga.field('name').label('名称')
-    ])
-    .actions(['batch'])
-    .listActions(['delete']);
->>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
 
 }
