@@ -1,0 +1,26 @@
+var mongoose = require('mongoose');
+var Promise = require('bluebird');
+var passportLocalMongoose = require('passport-local-mongoose');
+var Schema = mongoose.Schema;
+
+var administratorAccountSchema = new Schema({
+  name: String,
+  hash: String,
+  salt: String,
+  role: {type: Schema.Types.ObjectId, ref: 'Role'},
+  createdAt: {type: Date, default: Date.now},
+  updatedAt: Date,
+  deletedAt: Date
+});
+
+administratorAccountSchema.plugin(passportLocalMongoose, {
+  usernameField: 'name',
+  saltField: 'salt',
+  hashField: 'hash'
+});
+
+var AdministratorAccount = mongoose.model('AdministratorAccount', administratorAccountSchema);
+
+AdministratorAccount.register = Promise.promisify(AdministratorAccount.register, {context: AdministratorAccount});
+
+module.exports = AdministratorAccount;
