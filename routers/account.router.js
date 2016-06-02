@@ -1,4 +1,5 @@
 var router = require('express').Router();
+var passport = require('passport');
 
 var CustomerService = require('../services/account/customer-service');
 var AdministratorService = require('../services/account/administrator-service');
