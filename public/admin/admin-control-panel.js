@@ -126,7 +126,7 @@ adminApp.directive('changePwd', function(Restangular, $state, notification, $htt
         $(".modal", element).modal('show');
         scope.password = "";
         scope.confirm = "";
-        scope.id = JSON.parse(attrs.administrator)._id;
+        scope.id = JSON.parse(attrs.administrator).id;
         console.log(attrs.administrator);
       }
       scope.changePWDBtn = function() {
