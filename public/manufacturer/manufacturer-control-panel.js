@@ -14,20 +14,19 @@ var adminApp = angular.module('adminControlPanel', [
   .run(anonymousRedirect)
   .controller('AuthController', AuthController)
   .controller('ChangeOwnPwdController', ChangeOwnPwdController)
+  .controller('ManufacturerController', ManufacturerController);
 
 function manufacturerControlPanelConfig(NgAdminConfigurationProvider) {
 
   var nga = NgAdminConfigurationProvider;
-  var admin = nga.application('我是厂家')
+  var admin = nga.application('我是厂商')
     .baseApiUrl('http://127.0.0.1:3000/api/');
 
   admin.addEntity(nga.entity('batches'));
   admin.addEntity(nga.entity('models'));
-  admin.addEntity(nga.entity('manufacturers'));
 
   batchConfig(nga, admin);
   modelConfig(nga, admin);
-  manufacturerConfig(nga, admin);
 
   admin.menu(menuConfig(nga, admin));
   admin.header(headerConfig());
@@ -73,6 +72,13 @@ function routeConfig($stateProvider) {
       $location.path(logoutRedirectTo);
     }
   });
+
+  $stateProvider.state('select-manufacturer', {
+    url: '/select',
+    templateUrl: 'views/select-manufacturer.html',
+    controller: 'ManufacturerController',
+    controllerAs: 'manufacturerCtrl'
+  });
 }
 
 function anonymousRedirect($rootScope, $state, $auth) {
@@ -111,6 +117,32 @@ function AuthController($auth, $location) {
         $location.path(loginRedirectTo);
       });
   };
+}
+
+function ManufacturerController($http, $auth) {
+
+  var self = this;
+
+  $http.get('/api/manufacturers').success(function(result) {
+    self.manufacturers = result;
+  });
+
+  this.select = function(id) {
+    $http.get('/manufacturer/' + id + '/select').success(function(result) {
+      $auth.setToken(result.token);
+    }).error(function() {
+      alert('失败');
+    });
+  };
+
+  this.createNewManufacturer = function(entity) {
+    $http.post('/api/manufacturers', entity).success(function() {
+      alert('成功');
+    }).error(function() {
+      alert('失败');
+    });
+  };
+
 }
 
 function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
