@@ -11,10 +11,10 @@ function headerConfig() {
     '</div>',
     '<ul class="nav navbar-nav navbar-right hidden-xs" ng-controller="UserMenu as userMenu">',
     '<li class="dropdown">',
-    '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="fa fa-user"></i> {{userMenu.name}} <span class="caret"></span></a>',
+    '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="fa fa-user fa-fw"></i> {{userMenu.name}} <span class="caret"></span></a>',
     '<ul class="dropdown-menu">',
-    '<li><a ui-sref="changePwd"><i class="fa fa-wrench"></i> changePwd</a></li>',
-    '<li><a ui-sref="signOut"><i class="fa fa-sign-out"></i> 登出</a></li>',
+    '<li><a ui-sref="changePwd"><i class="fa fa-wrench fa-fw"></i> 修改密码</a></li>',
+    '<li><a ui-sref="signOut"><i class="fa fa-sign-out fa-fw"></i> 登出</a></li>',
     '</ul>',
     '</li>',
     '</ul>'
