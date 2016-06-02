@@ -43,7 +43,10 @@ function wechatVerify(accessToken, refreshToken, profile, done) {
 }
 
 function jwtVerify(payload, done) {
+<<<<<<< HEAD
+=======
   var id = payload.sub;
   payload.id = id;
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
   done(null, payload);
 }

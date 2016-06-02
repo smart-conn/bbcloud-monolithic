@@ -6,7 +6,11 @@ function batchConfig(nga, admin) {
   batch.listView()
     .title('批次管理')
     .fields([
+<<<<<<< HEAD
+      nga.field('id').label('批次号'),
+=======
       nga.field('id').label('订单号'),
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
       nga.field('model', 'reference').label('型号')
         .targetEntity(model)
         .targetField(nga.field('name')),

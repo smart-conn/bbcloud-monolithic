@@ -5,6 +5,23 @@ var LOGIN_REDIRECT_TO = '/dashboard';
 var LOGOUT_REDIRECT_TO = '/sign-in';
 
 var adminApp = angular.module('adminControlPanel', [
+<<<<<<< HEAD
+  'ng-admin',
+  'satellizer'
+])
+  .config(adminControlPanelConfig)
+  .config(authConfig)
+  .config(routeConfig)
+  .run(anonymousRedirect)
+  .run(permissionDenyRedirect)
+  .controller('SignInController', SignInController)
+  .controller('ChangeOwnPwdController', ChangeOwnPwdController)
+  .controller('UserMenu', function ($scope, $auth, $http) {
+    $http.get("/api/administrator-accounts/" + $auth.getPayload().sub).success(data => {
+      this.name = data.name;
+    }).catch(data => {
+      this.name = "未知用户";
+=======
     'ng-admin',
     'satellizer'
   ]).config(adminControlPanelConfig)
@@ -17,6 +34,7 @@ var adminApp = angular.module('adminControlPanel', [
       this.name = data.name;
     }).catch(data => {
       this.name = "Tosone";
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
     });
   });
 
@@ -53,6 +71,18 @@ function adminControlPanelConfig(NgAdminConfigurationProvider) {
   nga.configure(admin);
 }
 
+<<<<<<< HEAD
+function authConfig($authProvider) {
+  $authProvider.tokenPrefix = 'administrator';
+  $authProvider.baseUrl = '/administrator/';
+}
+
+function routeConfig($stateProvider) {
+  var loginStateName = LOGIN_STATE_NAME;
+  var logoutStateName = LOGOUT_STATE_NAME;
+  var logoutRedirectTo = LOGOUT_REDIRECT_TO;
+
+=======
 function signInConfig($stateProvider, $authProvider) {
   var signInStateName = LOGIN_STATE_NAME;
   var signOutStateName = LOGOUT_STATE_NAME;
@@ -60,21 +90,42 @@ function signInConfig($stateProvider, $authProvider) {
 
   $authProvider.tokenPrefix = 'administrator';
   $authProvider.baseUrl = '/administrator/';
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
   $stateProvider.state("changePwd", {
     url: '/change-password',
     templateUrl: 'views/change-password.html'
   });
+<<<<<<< HEAD
+
+  $stateProvider.state('403', {
+    parent: 'main',
+    url: '/forbidden',
+    templateUrl: 'views/403.html'
+  });
+
+  $stateProvider.state(loginStateName, {
+=======
   $stateProvider.state(signInStateName, {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
     url: '/sign-in',
     templateUrl: 'views/sign-in.html',
     controller: 'SignInController',
     controllerAs: 'signInCtrl'
   });
+<<<<<<< HEAD
+
+  $stateProvider.state(logoutStateName, {
+    url: '/sign-out',
+    controller: function ($auth, $location) {
+      $auth.logout();
+      $location.path(logoutRedirectTo);
+=======
   $stateProvider.state(signOutStateName, {
     url: '/sign-out',
     controller: function($auth, $location) {
       $auth.logout();
       $location.path(signOutRedirectTo);
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
     }
   });
 }
@@ -82,7 +133,11 @@ function signInConfig($stateProvider, $authProvider) {
 function anonymousRedirect($rootScope, $state, $auth) {
   var signInStateName = LOGIN_STATE_NAME;
   var signOutStateName = LOGOUT_STATE_NAME;
+<<<<<<< HEAD
+  $rootScope.$on('$stateChangeStart', function (evt, toState) {
+=======
   $rootScope.$on('$stateChangeStart', function(evt, toState) {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
     if (!$auth.isAuthenticated()) {
       if (toState.name === signInStateName) return;
       if (toState.name === signOutStateName) return;
@@ -93,23 +148,53 @@ function anonymousRedirect($rootScope, $state, $auth) {
   });
 }
 
+<<<<<<< HEAD
+function permissionDenyRedirect(Restangular, $state) {
+  Restangular.setErrorInterceptor(function(response, deferred, responseHandler) {
+    if (response.status === 403) {
+      $state.go('403');
+      return false; // error handled
+    }
+    return true; // error not handled
+  });
+}
+
+function SignInController($auth, $location, notification) {
+  var signInRedirectTo = LOGIN_REDIRECT_TO;
+  this.signIn = function (credentials) {
+    $auth.login(credentials)
+      .then(function () {
+        $location.path(signInRedirectTo);
+      }).catch(function (data) {
+        notification.log("Wrong Password.", { addnCls: 'humane-flatty-error' });
+=======
 function SignInController($auth, $location) {
   var signInRedirectTo = LOGIN_REDIRECT_TO;
   this.signIn = function(credentials) {
     $auth.login(credentials)
       .then(function() {
         $location.path(signInRedirectTo);
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
       });
   };
 }
 
 function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
   $scope.password = {
+<<<<<<< HEAD
+    oldPassword: "",
+    newPassword: "",
+    confirmPassport: ""
+  };
+  var signOutRedirectTo = LOGOUT_REDIRECT_TO;
+  this.changepwd = function (pwd) {
+=======
     password: "",
     confirm: ""
   };
   var signOutRedirectTo = LOGOUT_REDIRECT_TO;
   this.changepwd = function(pwd) {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
     if (pwd.newPassword == "") {
       notification.log("Password can not be blank.", { addnCls: 'humane-flatty-error' });
     } else if (pwd.newPassword != pwd.confirmPassport) {
@@ -131,11 +216,19 @@ function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
   }
 }
 
+<<<<<<< HEAD
+adminApp.directive('changePwd', function (Restangular, $state, notification, $http) {
+  return {
+    restrict: 'E',
+    scope: true,
+    link: function (scope, element, attrs) {
+=======
 adminApp.directive('changePwd', function(Restangular, $state, notification, $http) {
   return {
     restrict: 'E',
     scope: true,
     link: function(scope, element, attrs) {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
       scope.changePWD = () => {
         $(".modal", element).modal('show');
         scope.password = "";
@@ -143,13 +236,21 @@ adminApp.directive('changePwd', function(Restangular, $state, notification, $htt
         scope.id = JSON.parse(attrs.administrator).id;
         console.log(attrs.administrator);
       }
+<<<<<<< HEAD
+      scope.changePWDBtn = function () {
+=======
       scope.changePWDBtn = function() {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
         $(".modal", element).modal('hide');
         if (scope.password == scope.confirm) {
           $http.post("/auth/administrator/changePwd", {
             password: scope.password,
             id: scope.id
+<<<<<<< HEAD
+          }).success(function (data) {
+=======
           }).success(function(data) {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
             if (data.code == 200) {
               notification.log("Password Change Success.", { addnCls: 'humane-flatty-success' })
             } else {

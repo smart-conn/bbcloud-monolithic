@@ -13,7 +13,19 @@ var adminApp = angular.module('adminControlPanel', [
   .config(authConfig)
   .run(anonymousRedirect)
   .controller('AuthController', AuthController)
+<<<<<<< HEAD
+  .controller('ManufacturerController', ManufacturerController)
+  .controller('ChangeOwnPwdController', ChangeOwnPwdController)
+  .controller('UserMenu', function ($scope, $auth, $http) {
+    $http.get("/api/manufacturer-accounts/" + $auth.getPayload().sub).success(data => {
+      this.name = data.email;
+    }).catch(data => {
+      this.name = "未知用户";
+    });
+  });
+=======
   .controller('ManufacturerController', ManufacturerController);
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
 
 function manufacturerControlPanelConfig(NgAdminConfigurationProvider) {
 
@@ -65,7 +77,11 @@ function routeConfig($stateProvider) {
 
   $stateProvider.state(logoutStateName, {
     url: '/logout',
+<<<<<<< HEAD
+    controller: function ($auth, $location) {
+=======
     controller: function($auth, $location) {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
       $auth.logout();
       $location.path(logoutRedirectTo);
     }
@@ -83,7 +99,11 @@ function anonymousRedirect($rootScope, $state, $auth) {
   var loginStateName = LOGIN_STATE_NAME;
   var logoutStateName = LOGOUT_STATE_NAME;
   var signupStateName = SIGNUP_STATE_NAME;
+<<<<<<< HEAD
+  $rootScope.$on('$stateChangeStart', function (evt, toState) {
+=======
   $rootScope.$on('$stateChangeStart', function(evt, toState) {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
     if (!$auth.isAuthenticated()) {
       if (toState.name === loginStateName) return;
       if (toState.name === logoutStateName) return;
@@ -96,6 +116,26 @@ function anonymousRedirect($rootScope, $state, $auth) {
   });
 }
 
+<<<<<<< HEAD
+function AuthController($auth, $location, notification) {
+  var loginRedirectTo = LOGIN_REDIRECT_TO;
+
+  this.login = function (credentials) {
+    $auth.login(credentials)
+      .then(function () {
+        $location.path(loginRedirectTo);
+      }).catch(function (data) {
+        notification.log("Wrong Password.", { addnCls: 'humane-flatty-error' });
+      });
+  };
+
+  this.signup = function (credentials) {
+    $auth.signup(credentials)
+      .then(function () {
+        return $auth.login(credentials);
+      })
+      .then(function () {
+=======
 function AuthController($auth, $location) {
   var loginRedirectTo = LOGIN_REDIRECT_TO;
 
@@ -112,6 +152,7 @@ function AuthController($auth, $location) {
         return $auth.login(credentials);
       })
       .then(function() {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
         $location.path(loginRedirectTo);
       });
   };
@@ -121,6 +162,17 @@ function ManufacturerController($http, $auth, $location) {
 
   var self = this;
 
+<<<<<<< HEAD
+  $http.get('/api/manufacturers').success(function (result) {
+    self.manufacturers = result;
+  });
+
+  this.select = function (id) {
+    $http.get('/manufacturer/' + id + '/select').success(function (result) {
+      $auth.setToken(result.token);
+      $location.path(LOGIN_REDIRECT_TO);
+    }).error(function () {
+=======
   $http.get('/api/manufacturers').success(function(result) {
     self.manufacturers = result;
   });
@@ -130,16 +182,56 @@ function ManufacturerController($http, $auth, $location) {
       $auth.setToken(result.token);
       $location.path(LOGIN_REDIRECT_TO);
     }).error(function() {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
       alert('失败');
     });
   };
 
+<<<<<<< HEAD
+  this.createNewManufacturer = function (entity) {
+    $http.post('/api/manufacturers', entity).success(function () {
+      alert('成功');
+    }).error(function () {
+=======
   this.createNewManufacturer = function(entity) {
     $http.post('/api/manufacturers', entity).success(function() {
       alert('成功');
     }).error(function() {
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
       alert('失败');
     });
   };
 
 }
+<<<<<<< HEAD
+
+function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
+  $scope.password = {
+    oldPassword: "",
+    newPassword: "",
+    confirmPassport: ""
+  };
+  var signOutRedirectTo = LOGOUT_REDIRECT_TO;
+  this.changepwd = function (pwd) {
+    if (pwd.newPassword == "") {
+      notification.log("Password can not be blank.", { addnCls: 'humane-flatty-error' });
+    } else if (pwd.newPassword != pwd.confirmPassport) {
+      notification.log("The pin code must be the same.", { addnCls: 'humane-flatty-error' });
+    } else {
+      $http.post("/auth/manufacturer/changeOwnPwd", {
+        oldPassword: pwd.oldPassword,
+        newPassword: pwd.newPassword
+      }).success((reply) => {
+        if (reply.code == 200) {
+          notification.log("Password has been changed.", { addnCls: 'humane-flatty-success' });
+          $auth.logout();
+          $location.path(signOutRedirectTo);
+        } else {
+          notification.log("Change Password error.", { addnCls: 'humane-flatty-error' });
+        }
+      });
+    }
+  }
+}
+=======
+>>>>>>> 1f15849db1279b4212bdd162b3dc58178731ae70
