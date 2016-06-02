@@ -7,10 +7,7 @@ var customerAccountSchema = new Schema({
   mobilePhoneNumber: String,
   salt: String,
   hash: String,
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+  createdAt: {type: Date, default: Date.now}
 });
 
 customerAccountSchema.plugin(passportLocalMongoose, {

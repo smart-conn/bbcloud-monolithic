@@ -13,7 +13,8 @@ function permissionConfig(nga, admin) {
 
   permission.creationView()
     .fields([
-      nga.field('name').label('名称')
+      nga.field('name').label('名称'),
+      nga.field('code').label('编码')
     ]);
 
   permission.editionView()

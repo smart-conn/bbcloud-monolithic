@@ -13,14 +13,12 @@ var adminApp = angular.module('adminControlPanel', [
   .config(authConfig)
   .run(anonymousRedirect)
   .controller('AuthController', AuthController)
-  .controller('ChangeOwnPwdController', ChangeOwnPwdController)
   .controller('ManufacturerController', ManufacturerController);
 
 function manufacturerControlPanelConfig(NgAdminConfigurationProvider) {
 
   var nga = NgAdminConfigurationProvider;
-  var admin = nga.application('我是厂商')
-    .baseApiUrl('http://127.0.0.1:3000/api/');
+  var admin = nga.application('我是厂商').baseApiUrl('/api/');
 
   admin.addEntity(nga.entity('batches'));
   admin.addEntity(nga.entity('models'));
@@ -119,7 +117,7 @@ function AuthController($auth, $location) {
   };
 }
 
-function ManufacturerController($http, $auth) {
+function ManufacturerController($http, $auth, $location) {
 
   var self = this;
 
@@ -130,6 +128,7 @@ function ManufacturerController($http, $auth) {
   this.select = function(id) {
     $http.get('/manufacturer/' + id + '/select').success(function(result) {
       $auth.setToken(result.token);
+      $location.path(LOGIN_REDIRECT_TO);
     }).error(function() {
       alert('失败');
     });
@@ -144,91 +143,3 @@ function ManufacturerController($http, $auth) {
   };
 
 }
-
-function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
-  $scope.password = {
-    password: "",
-    confirm: ""
-  };
-  var signOutRedirectTo = LOGOUT_REDIRECT_TO;
-  this.changepwd = function(pwd) {
-    if (pwd.password == "") {
-      notification.log("Password can not be blank.", { addnCls: 'humane-flatty-error' });
-    } else if (pwd.password != pwd.confirm) {
-      notification.log("The pin code must be the same.", { addnCls: 'humane-flatty-error' });
-    } else {
-      $http.post("http://127.0.0.1:3001/auth/administrator/changeOwnPwd", {
-        password: pwd.password
-      }).success((reply) => {
-        if (reply.code == 200) {
-          notification.log("Password has been changed.", { addnCls: 'humane-flatty-success' });
-          $auth.logout();
-          $location.path(signOutRedirectTo);
-        } else {
-          notification.log("Change Password error.", { addnCls: 'humane-flatty-error' });
-        }
-      });
-    }
-  }
-}
-
-adminApp.directive('changePwd', function(Restangular, $state, notification, $http) {
-  return {
-    restrict: 'E',
-    scope: true,
-    link: function(scope, element, attrs) {
-      scope.changePWD = () => {
-        $(".modal", element).modal('show');
-        scope.password = "";
-        scope.confirm = "";
-        scope.id = JSON.parse(attrs.administrator).id;
-      }
-      scope.changePWDBtn = function() {
-        $(".modal", element).modal('hide');
-        if (scope.password == scope.confirm) {
-          $http.post("http://127.0.0.1:3001/auth/administrator/changepwd", {
-            password: scope.password,
-            id: scope.id
-          }).success(function(data) {
-            if (data.code == 200) {
-              notification.log("Password Change Success.", { addnCls: 'humane-flatty-success' })
-            } else {
-              notification.log("Password Change Error.", { addnCls: 'humane-flatty-error' })
-            }
-          });
-        } else {
-          notification.log("Password Change Error.", { addnCls: 'humane-flatty-error' })
-        }
-      }
-    },
-    template: `<button class="btn btn-default btn-xs" ng-click="changePWD()"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>ChangePWD</button>
-      <div class="modal fade">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <div class="modal-title">
-                Change Password
-              </div>
-            </div>
-            <div class="modal-body">
-              <form class="form">
-                <div class="form-group">
-                  <label class="">Password</label>
-                  <input type="password" class="form-control" ng-model="password" placeholder="Password">
-                </div>
-                <div class="form-group">
-                  <label>Confirm Password</label>
-                  <input type="password" class="form-control" ng-model="confirm" placeholder="Confirm Password">
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" ng-click="changePWDBtn()">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `
-  }
-});

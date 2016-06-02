@@ -20,20 +20,12 @@ function batchConfig(nga, admin) {
     .actions(['batch'])
     .listActions(['show', 'delete']);
 
-  batch.creationView()
-    .fields([
-      nga.field('model', 'reference').label('型号')
-        .targetEntity(model)
-        .targetField(nga.field('name')),
-      nga.field('count', 'number').label('数量')
-    ]);
-
   batch.showView()
     .fields([
       nga.field('model', 'reference').label('型号')
         .targetEntity(model)
         .targetField(nga.field('name')),
-      nga.field('count', 'number').label('数量'),
+      nga.field('amount', 'number').label('数量'),
       nga.field('createdAt').label('下单日期')
     ]);
 

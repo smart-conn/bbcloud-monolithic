@@ -6,16 +6,8 @@ var manufacturerAccountSchema = new Schema({
   email: String,
   salt: String,
   hash: String,
-  manufacturer: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Manufacturer'
-    }
-  ],
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+  manufacturer: [{type: Schema.Types.ObjectId, ref: 'Manufacturer'}],
+  createdAt: {type: Date, default: Date.now}
 });
 
 manufacturerAccountSchema.plugin(passportLocalMongoose, {

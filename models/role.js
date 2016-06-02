@@ -7,10 +7,6 @@ var roleSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Permission'
   }],
-  adminAccounts: [{
-    type: Schema.Types.ObjectId,
-    ref: 'AdministratorAccount'
-  }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: Date,
   deletedAt: Date
