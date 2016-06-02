@@ -12,6 +12,14 @@ var adminApp = angular.module('adminControlPanel', [
   .run(anonymousRedirect)
   .controller('SignInController', SignInController)
   .controller('ChangeOwnPwdController', ChangeOwnPwdController)
+  .controller('UserMenu', function($scope, $auth, $http) {
+    $http.get("/api/administrator-accounts/" + $auth.getPayload().sub).success(data => {
+      this.name = data.name;
+    }).catch(data => {
+      this.name = "Tosone";
+    });
+  });
+
 
 function adminControlPanelConfig(NgAdminConfigurationProvider) {
 
