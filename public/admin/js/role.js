@@ -6,10 +6,7 @@ function roleConfig(nga, admin) {
   role.listView()
     .title('角色')
     .fields([
-      nga.field('name').label('名称'),
-      nga.field('permissions', 'reference_many').label('权限')
-      .targetEntity(permission)
-      .targetField(nga.field('name'))
+      nga.field('name').label('名称')
     ])
     .actions(['create'])
     .listActions(['edit', 'delete']);
@@ -23,8 +20,8 @@ function roleConfig(nga, admin) {
     .fields([
       nga.field('name').label('名称'),
       nga.field('permissions', 'reference_many').label('权限')
-      .targetEntity(permission)
-      .targetField(nga.field('name'))
+        .targetEntity(permission)
+        .targetField(nga.field('name'))
     ]);
 
 }

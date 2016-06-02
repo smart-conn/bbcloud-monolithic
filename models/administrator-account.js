@@ -1,8 +1,9 @@
 var mongoose = require('mongoose');
+var Promise = require('bluebird');
 var passportLocalMongoose = require('passport-local-mongoose');
 var Schema = mongoose.Schema;
 
-var adminAccountSchema = new Schema({
+var administratorAccountSchema = new Schema({
   name: String,
   hash: String,
   salt: String,
@@ -12,10 +13,14 @@ var adminAccountSchema = new Schema({
   deletedAt: Date
 });
 
-adminAccountSchema.plugin(passportLocalMongoose, {
+administratorAccountSchema.plugin(passportLocalMongoose, {
   usernameField: 'name',
   saltField: 'salt',
   hashField: 'hash'
 });
 
-module.exports = mongoose.model('AdministratorAccount', adminAccountSchema);
+var AdministratorAccount = mongoose.model('AdministratorAccount', administratorAccountSchema);
+
+AdministratorAccount.register = Promise.promisify(AdministratorAccount.register, {context: AdministratorAccount});
+
+module.exports = AdministratorAccount;
