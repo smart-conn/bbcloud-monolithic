@@ -13,10 +13,10 @@ module.exports = class ManufacturerService extends AuthService {
   }
 
   createTokenExtras(user, done) {
-    this.model.findById(user.id).then(function (manufacturerAccount) {
-      console.log(manufacturerAccount);
-      var manufacturer = manufacturerAccount.manufacturer.toString();
-      done(null, { manufacturer });
+    this.model.findById(user.id).then(function(manufacturerAccount) {
+      var manufacturer;
+      try {manufacturer = manufacturerAccount.manufacturer.toString()} catch(err) {}
+      done(null, {manufacturer});
     }).catch(done);
   }
 
@@ -62,38 +62,8 @@ module.exports = class ManufacturerService extends AuthService {
         });
       };
     });
+
     return router;
   }
 
-  resetPwd() {
-    let router = require('express').Router();
-    router.post("/auth/manufacturer/resetPwd", (req, res) => {
-      let email = req.body.email;
-      let emailReg = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
-      console.log(req.body);
-      if (!emailReg.test(email)) {
-        res.json({ code: 500, msg: "Not a vaild email." });
-      } else {
-        this.model.findByUsername(email, (err, doc) => {
-          console.log(email);
-
-          if (!(err || doc)) {
-            console.log(err);
-            res.json({ code: 500, msg: "This email has not been registered yet." })
-          } else {
-            res.json(doc);
-          }
-        });
-      }
-    });
-    return router;
-  }
-
-  setPwd() {
-    let router = require('express').Router();
-    router.post("/auth/manufacturer/setPwd", (req, res) => {
-      res.json(req.body);
-    });
-    return router;
-  }
 }

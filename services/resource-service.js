@@ -19,8 +19,10 @@ module.exports = function(resource, model) {
   router.route('/' + resource)
     .get(function(req, res, next) {
 
-      if (checkScope(req.scope, resource + ':read')) {
-        return res.sendStatus(403);
+      if (req.user.realm === 'administrator') {
+        if (checkScope(req.scope, resource + ':read')) {
+          return res.sendStatus(403);
+        }
       }
 
       var page = req.query._page;
@@ -45,8 +47,10 @@ module.exports = function(resource, model) {
     })
     .post(function(req, res, next) {
 
-      if (checkScope(req.scope, resource + ':create')) {
-        return res.sendStatus(403);
+      if (req.user.realm === 'administrator') {
+        if (checkScope(req.scope, resource + ':create')) {
+          return res.sendStatus(403);
+        }
       }
 
       var data = req.body;
@@ -60,8 +64,10 @@ module.exports = function(resource, model) {
   router.route('/' + resource + '/:id')
     .get(function(req, res, next) {
 
-      if (checkScope(req.scope, resource + ':read')) {
-        return res.sendStatus(403);
+      if (req.user.realm === 'administrator') {
+        if (checkScope(req.scope, resource + ':read')) {
+          return res.sendStatus(403);
+        }
       }
 
       var id = req.params.id;
@@ -73,8 +79,10 @@ module.exports = function(resource, model) {
     })
     .put(function(req, res, next) {
 
-      if (checkScope(req.scope, resource + ':update')) {
-        return res.sendStatus(403);
+      if (req.user.realm === 'administrator') {
+        if (checkScope(req.scope, resource + ':update')) {
+          return res.sendStatus(403);
+        }
       }
 
       var id = req.params.id;
@@ -87,8 +95,10 @@ module.exports = function(resource, model) {
     })
     .delete(function(req, res, next) {
 
-      if (checkScope(req.scope, resource + ':delete')) {
-        return res.sendStatus(403);
+      if (req.user.realm === 'administrator') {
+        if (checkScope(req.scope, resource + ':delete')) {
+          return res.sendStatus(403);
+        }
       }
 
       var id = req.params.id;
