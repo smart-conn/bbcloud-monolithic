@@ -14,7 +14,8 @@ module.exports = class ManufacturerService extends AuthService {
 
   createTokenExtras(user, done) {
     this.model.findById(user.id).then(function(manufacturerAccount) {
-      var manufacturer = manufacturerAccount.manufacturer.toString();
+      var manufacturer;
+      try {manufacturer = manufacturerAccount.manufacturer.toString()} catch(err) {}
       done(null, {manufacturer});
     }).catch(done);
   }
