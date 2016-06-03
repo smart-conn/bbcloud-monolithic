@@ -2,6 +2,7 @@
   "port": 3000,
   "mongodb": "mongodb://127.0.0.1/",
   "secret": "secret",
+  "tokenExpiresIn":"24h",
   "wechat": {
     "appId": "APP_ID",
     "appSecret": "APP_SECRET",

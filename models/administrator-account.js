@@ -4,11 +4,11 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var Schema = mongoose.Schema;
 
 var administratorAccountSchema = new Schema({
-  name: {type: String, required: true, unique: true},
-  hash: {type: String, required: true},
-  salt: {type: String, required: true},
-  role: {type: Schema.Types.ObjectId, ref: 'Role'},
-  createdAt: {type: Date, default: Date.now},
+  name: { type: String, required: true, unique: true },
+  hash: { type: String, required: true },
+  salt: { type: String, required: true },
+  role: { type: Schema.Types.ObjectId, ref: 'Role' },
+  createdAt: { type: Date, default: Date.now },
   updatedAt: Date,
   deletedAt: Date
 });
@@ -21,6 +21,6 @@ administratorAccountSchema.plugin(passportLocalMongoose, {
 
 var AdministratorAccount = mongoose.model('AdministratorAccount', administratorAccountSchema);
 
-AdministratorAccount.register = Promise.promisify(AdministratorAccount.register, {context: AdministratorAccount});
+AdministratorAccount.register = Promise.promisify(AdministratorAccount.register, { context: AdministratorAccount });
 
 module.exports = AdministratorAccount;
