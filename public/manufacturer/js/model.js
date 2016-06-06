@@ -14,12 +14,12 @@ function modelConfig(nga, admin) {
     .title('建立新型号')
     .fields([
       nga.field('name').label('名称')
+        .validation({required: true}),
+      nga.field('code').label('编码')
+        .validation({required: true})
     ]);
 
   model.editionView()
-    .fields([
-      nga.field('name').label('名称'),
-      nga.field('code').label('编码')
-    ]);
+    .fields(model.creationView().fields());
 
 }

@@ -3,10 +3,10 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var Schema = mongoose.Schema;
 
 var manufacturerAccountSchema = new Schema({
-  email: String,
-  salt: String,
-  hash: String,
-  manufacturer: [{type: Schema.Types.ObjectId, ref: 'Manufacturer'}],
+  email: {type: String, required: true, unique: true},
+  salt: {type: String, required: true},
+  hash: {type: String, required: true},
+  manufacturer: {type: Schema.Types.ObjectId, ref: 'Manufacturer'},
   createdAt: {type: Date, default: Date.now}
 });
 

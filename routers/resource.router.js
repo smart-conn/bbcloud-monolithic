@@ -6,6 +6,13 @@ var resource = require('../services/resource-service');
 // acl
 router.use('/api', passport.authenticate('jwt', {session: false}));
 
+router.use('/api', function(req, res, next) {
+  if (req.user.realm === 'administrator') {
+    try {req.scope = req.user.scope.split(',')} catch(err) {}
+  }
+  next();
+});
+
 router.use('/api/batches', function(req, res, next) {
   if (req.user.realm === 'manufacturer') {
     try {req.body.manufacturer = req.user.manufacturer;} catch(err) {}
@@ -28,15 +35,35 @@ router.use('/api/models', function(req, res, next) {
   next();
 });
 
-router.use('/api/administrator-accounts', resource('AdministratorAccount'));
-router.use('/api/customer-accounts', resource('CustomerAccount'));
-router.use('/api/manufacturer-accounts', resource('ManufacturerAccount'));
+router.post('/api/administrator-accounts', function(req, res, next) {
+  var mongoose = require('mongoose');
+  var password = req.body.password;
+  var AdministratorAccount = mongoose.model('AdministratorAccount');
 
-router.use('/api/roles', resource('Role'));
-router.use('/api/permissions', resource('Permission'));
+  delete req.body.password;
 
-router.use('/api/manufacturers', resource('Manufacturer'));
-router.use('/api/batches', resource('Batch'));
-router.use('/api/models', resource('Model'));
+  var administratorAccount = new AdministratorAccount(req.body);
+  administratorAccount.save().then(function() {
+    return administratorAccount.setPassword(password);
+  }).then(function() {
+    return administratorAccount.save();
+  }).then(function() {
+    var reply = administratorAccount.toObject();
+    reply.id = reply._id;
+    delete reply._id;
+    res.json(reply);
+  }).catch(next);
+});
+
+router.use('/api', resource('administrator-accounts', 'AdministratorAccount'));
+router.use('/api', resource('customer-accounts', 'CustomerAccount'));
+router.use('/api', resource('manufacturer-accounts', 'ManufacturerAccount'));
+
+router.use('/api', resource('roles', 'Role'));
+router.use('/api', resource('permissions', 'Permission'));
+
+router.use('/api', resource('manufacturers', 'Manufacturer'));
+router.use('/api', resource('batches', 'Batch'));
+router.use('/api', resource('models', 'Model'));
 
 module.exports = router;

@@ -7,9 +7,12 @@ var LOGOUT_REDIRECT_TO = '/sign-in';
 var adminApp = angular.module('adminControlPanel', [
   'ng-admin',
   'satellizer'
-]).config(adminControlPanelConfig)
-  .config(signInConfig)
+])
+  .config(adminControlPanelConfig)
+  .config(authConfig)
+  .config(routeConfig)
   .run(anonymousRedirect)
+  .run(permissionDenyRedirect)
   .controller('SignInController', SignInController)
   .controller('ChangeOwnPwdController', ChangeOwnPwdController)
   .controller('UserMenu', function ($scope, $auth, $http) {
@@ -53,28 +56,39 @@ function adminControlPanelConfig(NgAdminConfigurationProvider) {
   nga.configure(admin);
 }
 
-function signInConfig($stateProvider, $authProvider) {
-  var signInStateName = LOGIN_STATE_NAME;
-  var signOutStateName = LOGOUT_STATE_NAME;
-  var signOutRedirectTo = LOGOUT_REDIRECT_TO;
-
+function authConfig($authProvider) {
   $authProvider.tokenPrefix = 'administrator';
   $authProvider.baseUrl = '/administrator/';
+}
+
+function routeConfig($stateProvider) {
+  var loginStateName = LOGIN_STATE_NAME;
+  var logoutStateName = LOGOUT_STATE_NAME;
+  var logoutRedirectTo = LOGOUT_REDIRECT_TO;
+
   $stateProvider.state("changePwd", {
     url: '/change-password',
     templateUrl: 'views/change-password.html'
   });
-  $stateProvider.state(signInStateName, {
+
+  $stateProvider.state('403', {
+    parent: 'main',
+    url: '/forbidden',
+    templateUrl: 'views/403.html'
+  });
+
+  $stateProvider.state(loginStateName, {
     url: '/sign-in',
     templateUrl: 'views/sign-in.html',
     controller: 'SignInController',
     controllerAs: 'signInCtrl'
   });
-  $stateProvider.state(signOutStateName, {
+
+  $stateProvider.state(logoutStateName, {
     url: '/sign-out',
     controller: function ($auth, $location) {
       $auth.logout();
-      $location.path(signOutRedirectTo);
+      $location.path(logoutRedirectTo);
     }
   });
 }
@@ -90,6 +104,16 @@ function anonymousRedirect($rootScope, $state, $auth) {
       evt.preventDefault();
       return $state.go(signInStateName);
     }
+  });
+}
+
+function permissionDenyRedirect(Restangular, $state) {
+  Restangular.setErrorInterceptor(function(response, deferred, responseHandler) {
+    if (response.status === 403) {
+      $state.go('403');
+      return false; // error handled
+    }
+    return true; // error not handled
   });
 }
 

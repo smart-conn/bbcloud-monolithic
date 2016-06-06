@@ -13,7 +13,20 @@ module.exports = class AdministratorService extends AuthService {
   }
 
   createTokenExtras(user, done) {
-    done();
+    this.model.findById(user.id).populate({
+      path: 'role',
+      populate: {path: 'permissions', select: 'code'}
+    }).then(function(admin) {
+      var scope;
+
+      try {
+        scope = admin.role.permissions.map(function(permission) {
+          return permission.code;
+        }).join(',');
+      } catch(err) {}
+
+      done(null, {scope});
+    }).catch(done);
   }
 
   getModelDataFromRequest(body) {

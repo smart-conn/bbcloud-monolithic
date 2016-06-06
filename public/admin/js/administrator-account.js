@@ -8,8 +8,8 @@ function administratorAccountConfig(nga, admin) {
     .fields([
       nga.field('name').label('名称'),
       nga.field('role', 'reference').label('角色')
-      .targetEntity(role)
-      .targetField(nga.field('name'))
+        .targetEntity(role)
+        .targetField(nga.field('name'))
     ])
     .actions(['batch', 'create'])
     .listActions([
@@ -21,6 +21,9 @@ function administratorAccountConfig(nga, admin) {
   administrator.creationView()
     .fields([
       nga.field('name')
+        .validation({required: true}),
+      nga.field('password', 'password')
+        .validation({required: true})
     ]);
 
   administrator.editionView()

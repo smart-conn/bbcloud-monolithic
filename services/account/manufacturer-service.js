@@ -13,7 +13,11 @@ module.exports = class ManufacturerService extends AuthService {
   }
 
   createTokenExtras(user, done) {
-    done();
+    this.model.findById(user.id).then(function(manufacturerAccount) {
+      var manufacturer;
+      try {manufacturer = manufacturerAccount.manufacturer.toString()} catch(err) {}
+      done(null, {manufacturer});
+    }).catch(done);
   }
 
   getModelDataFromRequest(body) {

@@ -3,8 +3,8 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var Schema = mongoose.Schema;
 
 var customerAccountSchema = new Schema({
-  wechatOpenId: String,
-  mobilePhoneNumber: String,
+  wechatOpenId: {type: String, unique: true},
+  mobilePhoneNumber: {type: String, unique: true},
   salt: String,
   hash: String,
   createdAt: {type: Date, default: Date.now}
