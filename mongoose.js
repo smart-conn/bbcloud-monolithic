@@ -13,3 +13,5 @@ require('./models/role');
 require('./models/manufacturer');
 require('./models/batch');
 require('./models/model');
+
+require('./models/device');

@@ -12,6 +12,7 @@
   "dependencies": {
     "bluebird": "^3.4.0",
     "body-parser": "^1.15.1",
+    "connect-multiparty": "^2.0.0",
     "cors": "^2.7.1",
     "ejs": "^2.4.2",
     "express": "^4.13.4",
@@ -22,11 +23,13 @@
     "morgan": "^1.7.0",
     "multer": "^1.1.0",
     "nconf": "^0.8.4",
+    "node-uuid": "^1.4.7",
     "passport": "^0.3.2",
     "passport-jwt": "^2.0.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.0.0",
     "passport-wechat": "^2.0.2",
-    "wechat-api": "^1.27.1"
+    "wechat-api": "^1.27.1",
+    "xlsx": "^0.8.0"
   }
 }

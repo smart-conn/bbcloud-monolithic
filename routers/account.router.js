@@ -5,6 +5,7 @@ var CustomerService = require('../services/account/customer-service');
 var AdministratorService = require('../services/account/administrator-service');
 var ManufacturerService = require('../services/account/manufacturer-service');
 
+
 var customerService = new CustomerService();
 var administractorService = new AdministratorService();
 var manufacturerService = new ManufacturerService();
@@ -15,6 +16,7 @@ router.use(manufacturerService.createMiddleware());
 
 router.use(administractorService.changePwd());
 router.use(manufacturerService.changePwd());
+router.use(manufacturerService.auth());
 
 router.get('/manufacturer/:id/select', passport.authenticate('jwt', { session: false }), function(req, res, next) {
   var realm = req.user.realm;

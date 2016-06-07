@@ -21,8 +21,6 @@ administratorAccountSchema.plugin(passportLocalMongoose, {
 
 var AdministratorAccount = mongoose.model('AdministratorAccount', administratorAccountSchema);
 
-// promisify
 AdministratorAccount.register = Promise.promisify(AdministratorAccount.register, {context: AdministratorAccount});
-AdministratorAccount.prototype.setPassword = Promise.promisify(AdministratorAccount.prototype.setPassword);
 
 module.exports = AdministratorAccount;

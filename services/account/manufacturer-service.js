@@ -9,6 +9,7 @@ module.exports = class ManufacturerService extends AuthService {
   constructor() {
     super();
     this.name = 'manufacturer';
+    this.manufacturerModel = mongoose.model('Manufacturer');
     this.model = mongoose.model('ManufacturerAccount');
   }
 
@@ -23,6 +24,32 @@ module.exports = class ManufacturerService extends AuthService {
   getModelDataFromRequest(body) {
     var email = body.email;
     return { email };
+  }
+
+  auth() {
+    let router = require('express').Router();
+    router.post('/auth/manufacturer/auth', passport.authenticate('jwt', { session: false }), (req, res) => {
+      let id = req.user.sub;
+      console.log('body:',req.body);
+      var entity = new this.manufacturerModel(req.body);
+      var accountModel = this.model;
+      entity.save().then(function(){
+        //update account
+        accountModel.findByIdAndUpdate(id,{manufacturer:entity._id}).then(function (account) {
+          if (!account) throw new Error('not fount');
+          var o = account.toObject();
+          o.id = o._id.toString();
+          delete o._id;
+          res.json(o)
+        }).catch(function(e){
+          console.log('update account error :',e);
+        });
+      }).catch(function(e){
+        console.log(e);
+        res.json({code:500,msg:'save error'})
+      })
+    })
+    return router;
   }
 
   changePwd() {

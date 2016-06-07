@@ -1,0 +1,22 @@
+<div class="container">
+
+  <h1>厂商认证</h1>
+
+  <form ng-submit="manufacturerCtrl.authManufacturer(entity)">
+
+    <div class="form-group">
+      <label for="">厂商</label>
+      <input class="form-control" ng-model="entity.name">
+    </div>
+    <div class="form-group">
+      <label for="">代码</label>
+      <input class="form-control" ng-model="entity.code">
+    </div>
+
+    <div class="form-group">
+      <button class="btn btn-default">认证</button>
+    </div>
+
+  </form>
+
+</div>

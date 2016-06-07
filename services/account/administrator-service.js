@@ -17,14 +17,9 @@ module.exports = class AdministratorService extends AuthService {
       path: 'role',
       populate: {path: 'permissions', select: 'code'}
     }).then(function(admin) {
-      var scope;
-
-      try {
-        scope = admin.role.permissions.map(function(permission) {
-          return permission.code;
-        }).join(',');
-      } catch(err) {}
-
+      var scope = admin.role.permissions.map(function(permission) {
+        return permission.code;
+      }).join(',');
       done(null, {scope});
     }).catch(done);
   }

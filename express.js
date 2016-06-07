@@ -6,6 +6,7 @@ var passport = require('passport');
 var glob = require('glob');
 var path = require('path');
 var nconf = require('nconf');
+var connectMultiparty = require('connect-multiparty');
 
 var app = express();
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
+app.use(connectMultiparty());
 
 glob('routers/**/*.router.js', function(err, files) {
   files.forEach(function(file) {
