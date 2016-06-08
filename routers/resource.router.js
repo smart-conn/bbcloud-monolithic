@@ -58,6 +58,8 @@ router.post('/api/administrator-accounts', function(req, res, next) {
   }).catch(next);
 });
 
+router.post('/api/batches', deviceService.services().createDevices);
+
 router.use('/api', resource('administrator-accounts', 'AdministratorAccount'));
 router.use('/api', resource('customer-accounts', 'CustomerAccount'));
 router.use('/api', resource('manufacturer-accounts', 'ManufacturerAccount'));
@@ -73,6 +75,6 @@ router.use('/api', resource('devices', 'Device'));
 
 
 //Device模块路由
-router.use('/api/device',  deviceService.initRoute())
+router.use('/api/devices',  deviceService.initRoute())
 
 module.exports = router;

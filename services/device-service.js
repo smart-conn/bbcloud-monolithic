@@ -5,6 +5,7 @@ var fs = require('fs');
 var router = require('express').Router();
 var Device = require('mongoose').model('Device');
 var Batch = require('mongoose').model('Batch');
+var model = require('mongoose').model('Model');
 var UUID = require('node-uuid');
 var XLSX = require('xlsx');
 var Promise = require('bluebird');
@@ -16,7 +17,14 @@ var batchState = [
   {val:2,msg:'已上传阿里云设备Id'},
   {val:3,msg:'已完成微信设备Id导入'},
   {val:4,msg:'已完成macId导入'}
-]
+];
+
+function mongoIdToWebId(entity) {
+  var o = entity.toObject();
+  o.id = o._id.toString();
+  delete o._id;
+  return o;
+}
 
 function checkUpdateAuth(req,res,next) {
   var operateType = 'update';
@@ -246,7 +254,7 @@ function generateBBCloudIds(req,res) {
 function generateBBCloudId(){
   var manufacturerCode = 'AAA',
       toyCode = 'BBBBBB',
-      uuid = UUID();
+      uuid = UUID(),
       year = new Date().getFullYear().toString().substring(2,4);
 
   return manufacturerCode+toyCode+year+uuid;
@@ -344,6 +352,58 @@ function deleteDevies(req,res) {
   })
 }
 
+function createDevices(req, res, next){
+  var data = req.body;
+  var deviceModel;
+  var devicesArray = [];
+  Promise.resolve()
+      .then(function(){
+        return model.findById(data.model).then(function(result){
+          deviceModel = result;
+          return result;
+        });
+      })
+      .then(function(){
+        var entity = new Batch(data);
+        return entity.save().then(function(result){
+          return result;
+        })
+      })
+      .then(function(deviceBatch){
+        for(var i = 0; i < deviceBatch.amount; i++){
+          var bbId = generateBBCloudId();
+          var devicesData = {
+            bbcloudDeviceId: bbId,
+            name: deviceModel.name,
+            manufacturerId: data.manufacturer,
+            batchId: deviceBatch._id,
+            socialAccount: '0' + bbId,
+            socialPassword: bbId
+          }
+          var tempmodel = new Device(devicesData)
+          devicesArray.push(tempmodel);
+        }
+        saveMultiRecords(devicesArray);
+        // devicesArray.forEach(function(item, index){
+        //   var entity = new Device(item);
+        //   entity.save(function(err){
+        //     console.log(err);
+        //   });
+        // });
+        res.json(mongoIdToWebId(deviceBatch));
+      }).catch(next);
+}
+
+function getDeviceInfo(req, res){
+  var macAddress = req.body.macAddress;
+  Device.findOne({macAddress: macAddress}, function(err, device){
+    if(err) return done(err);
+    if(!device) return done(new Error('not fount'));
+    var data = _.pick(device, 'bbcloudDeviceId', 'wechatDeviceId', 'aliyunDeviceId', 'aliyunDeviceSecret');
+    res.json(data);
+  });
+}
+
 module.exports = class DeviceService {
   constructor() {
 
@@ -358,9 +418,16 @@ module.exports = class DeviceService {
     router.post('/uploadAliIds', checkUpdateAuth, checkBatchState, parseAliIds_Json, uploadAliIds);
     router.post('/generateWechatDeviceIds', checkUpdateAuth, checkBatchState, reqesutWechatDeviceIds, generateWechatDeviceIds);
     router.post('/uploadMacIds', checkUpdateAuth, checkBatchState, parseMacIds_XLSX, uploadMacIds);
-    router.post('/deleteBatch', checkDeleteAuth, checkBatchState, deleteDevies)
+    router.post('/deleteBatch', checkDeleteAuth, checkBatchState, deleteDevies);
+    router.post('/exchangeId', getDeviceInfo);
 
     return router;
   }
 
-}
+  services(){
+    return {
+      createDevices: createDevices
+    }
+  }
+
+};
