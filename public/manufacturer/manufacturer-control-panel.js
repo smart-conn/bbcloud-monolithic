@@ -216,8 +216,17 @@ function ResetPwdController($scope, $http, notification) {
   }
 }
 
-function SetPwdController($scope, $http, notification) {
-  this.changepwd = function (password) {
-    console.log(password);
+function SetPwdController($scope, $http, notification, $location) {
+  this.changepwd = function (credentials) {
+    var token = $location.search().token;
+    if (credentials.password != credentials.confirm) {
+      notification.log("The pin code must be the same.", { addnCls: 'humane-flatty-error' });
+    } else {
+      $http.post('/auth/manufacturer/setPwd', {
+        token, password: credentials.password
+      }).success(function (data) {
+        console.log(data);
+      });
+    }
   }
 }

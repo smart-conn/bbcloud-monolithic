@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var RevokeSchema = new Schema({
-    token: String,
+var RevokeTokenSchema = new Schema({
+    active: { type: Boolean, default: true },
     timestamp: {
         type: Date, default: Date.now
     }
 });
 
-module.exports = mongoose.model('RevokeToken', RevokeSchema);
+module.exports = mongoose.model('RevokeToken', RevokeTokenSchema);

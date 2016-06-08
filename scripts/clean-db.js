@@ -5,8 +5,9 @@ require('../mongoose');
 
 var mongoose = require('mongoose');
 
-Promise.all(mongoose.modelNames().map(function(modelName) {
+Promise.all(mongoose.modelNames().map(function (modelName) {
   return mongoose.model(modelName).remove();
-})).then(function() {
+})).then(function () {
   console.log('clean done');
+  process.exit(0);
 });

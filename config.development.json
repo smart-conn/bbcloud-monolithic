@@ -2,7 +2,7 @@
   "port": 3000,
   "mongodb": "mongodb://127.0.0.1/",
   "secret": "secret",
-  "tokenExpiresIn":"24h",
+  "tokenExpiresIn": "1h",
   "wechat": {
     "appId": "APP_ID",
     "appSecret": "APP_SECRET",
@@ -11,5 +11,16 @@
     "state": "state",
     "debug": false,
     "airkissKey": "airkisskey"
-  }
+  },
+  "nodemailerTransporter": {
+    "host": "smtpdm.aliyun.com",
+    "port": 25,
+    "secureConnection": true,
+    "auth": {
+      "user": "i@tosiney.com",
+      "pass": "8541539655Aa"
+    }
+  },
+  "mailFrom": "i@tosiney.com",
+  "sendMailDelay": 60
 }
