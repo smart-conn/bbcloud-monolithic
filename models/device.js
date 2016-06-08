@@ -12,7 +12,6 @@ var deviceSchema = new Schema({
   wechatDeviceLicence:String, //产品使用直连SDK时返回的设备证书
   aliyunDeviceId:{type: String, unique: true},  //阿里云 IoT 服务分配的设备 id	unique
   aliyunDeviceSecret:String,
-  activatedAt:Date,  //激活时间。为空代表未激活
   lastLoginIp:String,  //最近访问 bbcloud 的 ip
   lastLoginAt:Date,  //最近访问 bbcloud 的时间
   manufacturerId:String,  //厂商Id ,指向 Manufacturer

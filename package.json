@@ -37,16 +37,17 @@
     "passport-local-mongoose": "^4.0.0",
     "passport-wechat": "^2.0.2",
     "wechat-api": "^1.27.1",
-    "xlsx": "^0.8.0"
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/smart-conn/bbcloud-monolithic.git"
-  },
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^2.5.3",
-    "mochawesome": "^1.3.5",
-    "nodemon": "^1.9.2",
-    "request": "^2.72.0"
+    "xlsx": "^0.8.0",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/smart-conn/bbcloud-monolithic.git"
+    },
+    "devDependencies": {
+      "chai": "^3.5.0",
+      "mocha": "^2.5.3",
+      "mochawesome": "^1.3.5",
+      "nodemon": "^1.9.2",
+      "request": "^2.72.0"
+    }
   }
 }
