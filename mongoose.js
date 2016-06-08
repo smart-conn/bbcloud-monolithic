@@ -14,5 +14,6 @@ require('./models/manufacturer');
 require('./models/batch');
 require('./models/model');
 
-require('./models/send-email');
+require('./models/device');
 require('./models/revoke-token');
+require('./models/send-email');

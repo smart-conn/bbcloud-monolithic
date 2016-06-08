@@ -6,7 +6,8 @@ var LOGOUT_REDIRECT_TO = '/sign-in';
 
 var adminApp = angular.module('adminControlPanel', [
   'ng-admin',
-  'satellizer'
+  'satellizer',
+  'ngFileUpload'
 ])
   .config(adminControlPanelConfig)
   .config(authConfig)
@@ -14,6 +15,7 @@ var adminApp = angular.module('adminControlPanel', [
   .run(anonymousRedirect)
   .run(permissionDenyRedirect)
   .controller('SignInController', SignInController)
+  // .controller('UploadController', UploadController)
   .controller('ChangeOwnPwdController', ChangeOwnPwdController)
   .controller('UserMenu', function ($scope, $auth, $http) {
     $http.get("/api/administrator-accounts/" + $auth.getPayload().sub).success(data => {
@@ -21,7 +23,75 @@ var adminApp = angular.module('adminControlPanel', [
     }).catch(data => {
       this.name = "未知用户";
     });
-  });
+  })
+  .directive('generateCloudId', ['$http', function ($http) {
+        return {
+            restrict: 'E',
+            scope: { batch: '&' },
+            template: '<a class="btn btn-default" ng-click="generateCloudId()">生成BBCloudId</a>',
+            link: function (scope) {
+                scope.generateCloudId = function () {
+                    $http.post('/api/device/generateBBCloudIds',{
+                      batchId:scope.batch().values.id
+                    }).success(function (data) {
+                      alert(data.msg)
+                    })
+                };
+            }
+        };
+    }])
+  .directive('generateWechatId', ['$http', function ($http) {
+        return {
+            restrict: 'E',
+            scope: { batch: '&' },
+            template: '<a class="btn btn-default" ng-click="generateWechatIds()">生成Wechat device Ids</a>',
+            link: function (scope) {
+                scope.generateWechatIds = function () {
+                    $http.post('/api/device/generateWechatDeviceIds',{
+                      batchId:scope.batch().values.id
+                    }).success(function (data) {
+                      alert(data.msg)
+                    })
+                };
+            }
+        };
+    }])
+  .directive('uploadAliIds', ['$location', function ($location) {
+        return {
+            restrict: 'E',
+            scope: { batch: '&' },
+            template: '<a class="btn btn-default" ng-click="toUploadPage()">上传阿里设备Ids</a>',
+            link: function (scope) {
+                scope.toUploadPage = function () {
+                    $location.path('/upload-aliIds/'+scope.batch().values.id);
+                };
+            }
+        };
+    }])
+  .directive('uploadMacIds', ['$location', function ($location) {
+        return {
+            restrict: 'E',
+            scope: { batch: '&' },
+            template: '<a class="btn btn-default" ng-click="toUploadPage()">上传设备MacIds</a>',
+            link: function (scope) {
+                scope.toUploadPage = function () {
+                    $location.path('/upload-macIds/'+scope.batch().values.id);
+                };
+            }
+        };
+    }])
+  .directive('deleteBatch', ['$location', function ($location) {
+        return {
+            restrict: 'E',
+            scope: { batch: '&' },
+            template: '<a class="btn btn-default" ng-click="toUploadPage()">删除该批次</a>',
+            link: function (scope) {
+                scope.toUploadPage = function () {
+                    $location.path('/delete-batch/'+scope.batch().values.id);
+                };
+            }
+        };
+    }]);
 
 
 function adminControlPanelConfig(NgAdminConfigurationProvider) {
@@ -84,6 +154,72 @@ function routeConfig($stateProvider) {
     controllerAs: 'signInCtrl'
   });
 
+  $stateProvider.state('uploadAliIds', {
+    parent: 'main',
+    url: '/upload-aliIds/:id',
+    templateUrl: 'views/upload-aliIds.html',
+    controller: function ($scope, $stateParams, Upload, $timeout) {
+      $scope.uploadAliIds = function(file) {
+        file.upload = Upload.upload({
+          url: '/api/device/uploadAliIds',
+          data: {batchId:$stateParams.id, file: file},
+        });
+
+        file.upload.then(function (response) {
+          $timeout(function () {
+            file.result = response.data;
+          });
+        }, function (response) {
+          if (response.status > 0)
+            $scope.errorMsg = response.status + ': ' + response.data;
+        }, function (evt) {
+          // Math.min is to fix IE which reports 200% sometimes
+          file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        });
+      }
+    }
+  });
+  $stateProvider.state('uploadMacIds', {
+    parent: 'main',
+    url: '/upload-macIds/:id',
+    templateUrl: 'views/upload-macIds.html',
+    controller: function ($scope, $stateParams, Upload, $timeout) {
+      $scope.uploadMacIds = function(file) {
+        file.upload = Upload.upload({
+          url: '/api/device/uploadMacIds',
+          data: {batchId:$stateParams.id, file: file},
+        });
+
+        file.upload.then(function (response) {
+          $timeout(function () {
+            file.result = response.data;
+          });
+        }, function (response) {
+          if (response.status > 0)
+            $scope.errorMsg = response.status + ': ' + response.data;
+        }, function (evt) {
+          // Math.min is to fix IE which reports 200% sometimes
+          file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        });
+      }
+    }
+  });
+  $stateProvider.state('deleteBatch', {
+    parent: 'main',
+    url: '/delete-batch/:id',
+    templateUrl: 'views/delete-batch.html',
+    controller: function ($scope, $stateParams, $http) {
+      $scope.deleteBatch = function() {
+          $http.post('/api/device/deleteBatch',{
+            batchId:$stateParams.id,
+            reason:$scope.reason
+          }).success(function (data) {
+            alert(data.msg)
+          })
+      }
+    }
+  });
+
   $stateProvider.state(logoutStateName, {
     url: '/sign-out',
     controller: function ($auth, $location) {
@@ -128,6 +264,7 @@ function SignInController($auth, $location, notification) {
       });
   };
 }
+
 
 function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
   $scope.password = {

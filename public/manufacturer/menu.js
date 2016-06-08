@@ -9,5 +9,10 @@ function menuConfig(nga, admin) {
       .title('型号管理')
       .icon('<i class="fa fa-mobile fa-fw"></i>')
       .link('/models/list')
+    )
+    .addChild(nga.menu()
+      .title('认证')
+      .icon('<i class="fa fa-mobile fa-fw"></i>')
+      .link('/auth-manufacturer')
     );
 }

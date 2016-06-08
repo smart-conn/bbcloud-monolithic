@@ -34,9 +34,11 @@ function manufacturerControlPanelConfig(NgAdminConfigurationProvider) {
 
   admin.addEntity(nga.entity('batches'));
   admin.addEntity(nga.entity('models'));
+  admin.addEntity(nga.entity('manufacturers'));
 
   batchConfig(nga, admin);
   modelConfig(nga, admin);
+  manufacturersAuthConfig(nga, admin);
 
   admin.menu(menuConfig(nga, admin));
   admin.header(headerConfig());
@@ -61,6 +63,12 @@ function routeConfig($stateProvider) {
   $stateProvider.state("changePwd", {
     url: '/change-password',
     templateUrl: 'views/change-password.html'
+  })
+  .state("auth", {
+    url: '/auth-manufacturer',
+    templateUrl: 'views/auth-manufacturer.html',
+    controller: 'ManufacturerController',
+    controllerAs: 'manufacturerCtrl'
   });
 
   $stateProvider.state(loginStateName, {
@@ -166,6 +174,14 @@ function ManufacturerController($http, $auth, $location) {
 
   this.createNewManufacturer = function (entity) {
     $http.post('/api/manufacturers', entity).success(function () {
+      alert('成功');
+    }).error(function () {
+      alert('失败');
+    });
+  };
+
+  this.authManufacturer = function (entity) {
+    $http.post('/auth/manufacturer/auth', entity).success(function () {
       alert('成功');
     }).error(function () {
       alert('失败');
