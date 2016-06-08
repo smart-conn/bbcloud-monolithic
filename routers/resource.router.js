@@ -2,7 +2,9 @@ var router = require('express').Router();
 var passport = require('passport');
 
 var resource = require('../services/resource-service');
-var deviceService = require('../services/devices-service')();
+var DeviceService = require('../services/device-service');
+var deviceService = new DeviceService();
+
 // acl
 router.use('/api', passport.authenticate('jwt', {session: false}));
 
@@ -54,7 +56,7 @@ router.post('/api/administrator-accounts', function(req, res, next) {
     delete reply._id;
     res.json(reply);
   }).catch(next);
-}); 
+});
 
 router.use('/api', resource('administrator-accounts', 'AdministratorAccount'));
 router.use('/api', resource('customer-accounts', 'CustomerAccount'));
@@ -71,6 +73,6 @@ router.use('/api', resource('devices', 'Device'));
 
 
 //Device模块路由
-router.use('/api/device',  deviceService)
+router.use('/api/device',  deviceService.initRoute())
 
 module.exports = router;

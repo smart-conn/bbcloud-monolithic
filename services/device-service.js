@@ -1,3 +1,6 @@
+'use strict'
+
+
 var fs = require('fs');
 var router = require('express').Router();
 var Device = require('mongoose').model('Device');
@@ -341,14 +344,23 @@ function deleteDevies(req,res) {
   })
 }
 
-module.exports = function () {
-  var router = require('express').Router();
+module.exports = class DeviceService {
+  constructor() {
 
-  router.post('/generateBBCloudIds', checkUpdateAuth, checkBatchState, generateBBCloudIds);
-  router.post('/uploadAliIds', checkUpdateAuth, checkBatchState, parseAliIds_Json, uploadAliIds);
-  router.post('/generateWechatDeviceIds', checkUpdateAuth, checkBatchState, reqesutWechatDeviceIds, generateWechatDeviceIds);
-  router.post('/uploadMacIds', checkUpdateAuth, checkBatchState, parseMacIds_XLSX, uploadMacIds);
-  router.post('/deleteBatch', checkDeleteAuth, checkBatchState, deleteDevies)
 
-  return router;
+
+  }
+
+  initRoute(){
+    var router = require('express').Router();
+
+    router.post('/generateBBCloudIds', checkUpdateAuth, checkBatchState, generateBBCloudIds);
+    router.post('/uploadAliIds', checkUpdateAuth, checkBatchState, parseAliIds_Json, uploadAliIds);
+    router.post('/generateWechatDeviceIds', checkUpdateAuth, checkBatchState, reqesutWechatDeviceIds, generateWechatDeviceIds);
+    router.post('/uploadMacIds', checkUpdateAuth, checkBatchState, parseMacIds_XLSX, uploadMacIds);
+    router.post('/deleteBatch', checkDeleteAuth, checkBatchState, deleteDevies)
+
+    return router;
+  }
+
 }
