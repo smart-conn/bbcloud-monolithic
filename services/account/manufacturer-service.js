@@ -166,8 +166,7 @@ module.exports = class ManufacturerService extends AuthService {
               if (err) {
                 reject({ code: 500, msg: "Send email log can not save to database, please retry." });
               } else {
-                next({ code: 200, msg: "We have send a email to you, please check your email." });
-                resolve(true);
+                resolve(res.json({ code: 200, msg: "We have send a email to you, please check your email.", token }));
               }
             });
           });
