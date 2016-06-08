@@ -55,4 +55,5 @@ Promise.all(mongoose.modelNames().map(function(modelName) {
   })
 }).then(function() {
   console.log('init done');
+  process.exit(0); 
 });

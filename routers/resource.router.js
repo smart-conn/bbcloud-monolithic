@@ -36,6 +36,26 @@ router.use('/api/models', function(req, res, next) {
   next();
 });
 
+router.post('/api/administrator-accounts', function(req, res, next) {
+  var mongoose = require('mongoose');
+  var password = req.body.password;
+  var AdministratorAccount = mongoose.model('AdministratorAccount');
+
+  delete req.body.password;
+
+  var administratorAccount = new AdministratorAccount(req.body);
+  administratorAccount.save().then(function() {
+    return administratorAccount.setPassword(password);
+  }).then(function() {
+    return administratorAccount.save();
+  }).then(function() {
+    var reply = administratorAccount.toObject();
+    reply.id = reply._id;
+    delete reply._id;
+    res.json(reply);
+  }).catch(next);
+}); 
+
 router.use('/api', resource('administrator-accounts', 'AdministratorAccount'));
 router.use('/api', resource('customer-accounts', 'CustomerAccount'));
 router.use('/api', resource('manufacturer-accounts', 'ManufacturerAccount'));
