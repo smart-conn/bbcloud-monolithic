@@ -13,3 +13,6 @@ require('./models/role');
 require('./models/manufacturer');
 require('./models/batch');
 require('./models/model');
+
+require('./models/send-email');
+require('./models/revoke-token');

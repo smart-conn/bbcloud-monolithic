@@ -10,22 +10,22 @@ module.exports = class AdministratorService extends AuthService {
     super();
     this.name = 'administrator';
     this.model = mongoose.model('AdministratorAccount');
+    this.revokeTokenModel = mongoose.model('RevokeToken');
   }
 
   createTokenExtras(user, done) {
     this.model.findById(user.id).populate({
       path: 'role',
-      populate: {path: 'permissions', select: 'code'}
-    }).then(function(admin) {
-      var scope;
-
-      try {
-        scope = admin.role.permissions.map(function(permission) {
+      populate: { path: 'permissions', select: 'code' }
+    }).then(function (admin) {
+      if (!admin.role) {
+        done(null, {});
+      } else {
+        var scope = admin.role.permissions.map(function (permission) {
           return permission.code;
         }).join(',');
-      } catch(err) {}
-
-      done(null, {scope});
+        done(null, { scope });
+      }
     }).catch(done);
   }
 

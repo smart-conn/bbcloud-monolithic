@@ -17,12 +17,12 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
-glob('routers/**/*.router.js', function(err, files) {
-  files.forEach(function(file) {
+glob('routers/**/*.router.js', function (err, files) {
+  files.forEach(function (file) {
     app.use(require(path.join(__dirname, file)));
   });
 });
 
-app.listen(nconf.get('port') || 3000, function() {
+app.listen(nconf.get('port') || 3000, function () {
   console.log('Server running at http://127.0.0.1:' + nconf.get('port') || 3000);
 });
