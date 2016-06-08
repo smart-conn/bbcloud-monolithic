@@ -3,3 +3,4 @@ bower_components/
 .vscode/
 mochawesome-reports/
 .DS_Store
+.idea
