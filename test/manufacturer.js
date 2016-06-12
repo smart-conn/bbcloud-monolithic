@@ -97,7 +97,7 @@ describe('厂家账户测试', () => {
             });
         });
 
-        it('频繁利用邮件找回密码', done => {
+        it('利用失效邮件找回密码', done => {
             option.body.email = email;
             option.headers.Authorization = Authorization + token;
             request.post(option, (err, res, body) => {
