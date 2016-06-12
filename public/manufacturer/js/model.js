@@ -22,4 +22,6 @@ function modelConfig(nga, admin) {
   model.editionView()
     .fields(model.creationView().fields());
 
+    model.deletionView()
+        .title('删除设备型号')
 }

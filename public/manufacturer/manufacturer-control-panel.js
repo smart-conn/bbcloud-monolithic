@@ -8,9 +8,15 @@ var LOGIN_REDIRECT_TO = '/dashboard';
 var LOGOUT_REDIRECT_TO = '/login';
 
 var adminApp = angular.module('adminControlPanel', [
+<<<<<<< HEAD
     'ng-admin',
     'satellizer'
   ]).config(manufacturerControlPanelConfig)
+=======
+  'ng-admin',
+  'satellizer'
+]).config(manufacturerControlPanelConfig)
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
   .config(routeConfig)
   .config(authConfig)
   .run(anonymousRedirect)
@@ -19,7 +25,11 @@ var adminApp = angular.module('adminControlPanel', [
   .controller('ChangeOwnPwdController', ChangeOwnPwdController)
   .controller('ResetPwdController', ResetPwdController)
   .controller('SetPwdController', SetPwdController)
+<<<<<<< HEAD
   .controller('UserMenu', function($scope, $auth, $http) {
+=======
+  .controller('UserMenu', function ($scope, $auth, $http) {
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
     $http.get("/api/manufacturer-accounts/" + $auth.getPayload().sub).success(data => {
       this.name = data.email;
     }).catch(data => {
@@ -34,9 +44,17 @@ function manufacturerControlPanelConfig(NgAdminConfigurationProvider) {
 
   admin.addEntity(nga.entity('batches'));
   admin.addEntity(nga.entity('models'));
+<<<<<<< HEAD
 
   batchConfig(nga, admin);
   modelConfig(nga, admin);
+=======
+  admin.addEntity(nga.entity('manufacturers'));
+
+  batchConfig(nga, admin);
+  modelConfig(nga, admin);
+  manufacturersAuthConfig(nga, admin);
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
 
   admin.menu(menuConfig(nga, admin));
   admin.header(headerConfig());
@@ -61,6 +79,15 @@ function routeConfig($stateProvider) {
   $stateProvider.state("changePwd", {
     url: '/change-password',
     templateUrl: 'views/change-password.html'
+<<<<<<< HEAD
+=======
+  })
+  .state("auth", {
+    url: '/auth-manufacturer',
+    templateUrl: 'views/auth-manufacturer.html',
+    controller: 'ManufacturerController',
+    controllerAs: 'manufacturerCtrl'
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
   });
 
   $stateProvider.state(loginStateName, {
@@ -79,7 +106,11 @@ function routeConfig($stateProvider) {
 
   $stateProvider.state(logoutStateName, {
     url: '/logout',
+<<<<<<< HEAD
     controller: function($auth, $location) {
+=======
+    controller: function ($auth, $location) {
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
       $auth.logout();
       $location.path(logoutRedirectTo);
     }
@@ -109,7 +140,11 @@ function anonymousRedirect($rootScope, $state, $auth) {
   var signupStateName = SIGNUP_STATE_NAME;
   var resetPwdStateName = RESETPWD_STATE_NAME;
   var setPwdStateName = SETPWD_STATE_NAME;
+<<<<<<< HEAD
   $rootScope.$on('$stateChangeStart', function(evt, toState) {
+=======
+  $rootScope.$on('$stateChangeStart', function (evt, toState) {
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
     if (!$auth.isAuthenticated()) {
       if (toState.name === loginStateName) return;
       if (toState.name === logoutStateName) return;
@@ -127,6 +162,7 @@ function anonymousRedirect($rootScope, $state, $auth) {
 function AuthController($auth, $location, notification) {
   var loginRedirectTo = LOGIN_REDIRECT_TO;
 
+<<<<<<< HEAD
   this.login = function(credentials) {
     $auth.setStorageType('sessionStorage');
     $auth.login(credentials)
@@ -145,6 +181,23 @@ function AuthController($auth, $location, notification) {
         return $auth.login(credentials);
       })
       .then(function() {
+=======
+  this.login = function (credentials) {
+    $auth.login(credentials)
+      .then(function () {
+        $location.path(loginRedirectTo);
+      }).catch(function (data) {
+        notification.log("Wrong Password.", { addnCls: 'humane-flatty-error' });
+      });
+  };
+
+  this.signup = function (credentials) {
+    $auth.signup(credentials)
+      .then(function () {
+        return $auth.login(credentials);
+      })
+      .then(function () {
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
         $location.path(loginRedirectTo);
       });
   };
@@ -154,6 +207,7 @@ function ManufacturerController($http, $auth, $location) {
 
   var self = this;
 
+<<<<<<< HEAD
   $http.get('/api/manufacturers').success(function(result) {
     self.manufacturers = result;
   });
@@ -163,14 +217,40 @@ function ManufacturerController($http, $auth, $location) {
       $auth.setToken(result.token);
       $location.path(LOGIN_REDIRECT_TO);
     }).error(function() {
+=======
+  $http.get('/api/manufacturers').success(function (result) {
+    self.manufacturers = result;
+  });
+
+  this.select = function (id) {
+    $http.get('/manufacturer/' + id + '/select').success(function (result) {
+      $auth.setToken(result.token);
+      $location.path(LOGIN_REDIRECT_TO);
+    }).error(function () {
       alert('失败');
     });
   };
 
+  this.createNewManufacturer = function (entity) {
+    $http.post('/api/manufacturers', entity).success(function () {
+      alert('成功');
+    }).error(function () {
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
+      alert('失败');
+    });
+  };
+
+<<<<<<< HEAD
   this.createNewManufacturer = function(entity) {
     $http.post('/api/manufacturers', entity).success(function() {
       alert('成功');
     }).error(function() {
+=======
+  this.authManufacturer = function (entity) {
+    $http.post('/auth/manufacturer/auth', entity).success(function () {
+      alert('成功');
+    }).error(function () {
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
       alert('失败');
     });
   };
@@ -184,6 +264,7 @@ function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
     confirmPassport: ""
   };
   var signOutRedirectTo = LOGOUT_REDIRECT_TO;
+<<<<<<< HEAD
   this.changepwd = function(pwd) {
     if (pwd.newPassword == "") {
       notification.log("Password can not be blank.", {
@@ -193,12 +274,20 @@ function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
       notification.log("The pin code must be the same.", {
         addnCls: 'humane-flatty-error'
       });
+=======
+  this.changepwd = function (pwd) {
+    if (pwd.newPassword == "") {
+      notification.log("Password can not be blank.", { addnCls: 'humane-flatty-error' });
+    } else if (pwd.newPassword != pwd.confirmPassport) {
+      notification.log("The pin code must be the same.", { addnCls: 'humane-flatty-error' });
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
     } else {
       $http.post("/auth/manufacturer/changeOwnPwd", {
         oldPassword: pwd.oldPassword,
         newPassword: pwd.newPassword
       }).success((reply) => {
         if (reply.code == 200) {
+<<<<<<< HEAD
           notification.log("Password has been changed.", {
             addnCls: 'humane-flatty-success'
           });
@@ -208,6 +297,13 @@ function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
           notification.log("Change Password error.", {
             addnCls: 'humane-flatty-error'
           });
+=======
+          notification.log("Password has been changed.", { addnCls: 'humane-flatty-success' });
+          $auth.logout();
+          $location.path(signOutRedirectTo);
+        } else {
+          notification.log("Change Password error.", { addnCls: 'humane-flatty-error' });
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
         }
       });
     }
@@ -215,6 +311,7 @@ function ChangeOwnPwdController($scope, $http, notification, $auth, $location) {
 }
 
 function ResetPwdController($scope, $http, notification) {
+<<<<<<< HEAD
   this.resetPwd = function(email) {
     $http.post('/auth/manufacturer/resetPwd', {
       email
@@ -227,6 +324,14 @@ function ResetPwdController($scope, $http, notification) {
         notification.log(data.msg, {
           addnCls: 'humane-flatty-error'
         });
+=======
+  this.resetPwd = function (email) {
+    $http.post('/auth/manufacturer/resetPwd', { email }).success((data) => {
+      if (data.code == 200) {
+        notification.log('We have send a email to your email, please check your email.', { addnCls: 'humane-flatty-success' });
+      } else {
+        notification.log(data.msg, { addnCls: 'humane-flatty-error' });
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
       }
       console.log(data);
     }).error(console.log);
@@ -234,6 +339,7 @@ function ResetPwdController($scope, $http, notification) {
 }
 
 function SetPwdController($scope, $http, notification, $location) {
+<<<<<<< HEAD
   this.changepwd = function(credentials) {
     var token = $location.search().token;
     if (credentials.password != credentials.confirm) {
@@ -245,6 +351,16 @@ function SetPwdController($scope, $http, notification, $location) {
         token,
         password: credentials.password
       }).success(function(data) {
+=======
+  this.changepwd = function (credentials) {
+    var token = $location.search().token;
+    if (credentials.password != credentials.confirm) {
+      notification.log("The pin code must be the same.", { addnCls: 'humane-flatty-error' });
+    } else {
+      $http.post('/auth/manufacturer/setPwd', {
+        token, password: credentials.password
+      }).success(function (data) {
+>>>>>>> eb7d4840902ff9920913fa562f8cca4b1a759618
         console.log(data);
       });
     }

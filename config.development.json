@@ -10,7 +10,14 @@
     "scope": "snapi_userinfo",
     "state": "state",
     "debug": false,
-    "airkissKey": "airkisskey"
+    "airkissKey": "airkisskey",
+    "token":"token",
+    "encodingAESKey":"'IcoNkijUvWYeiNLO0lpsEpAhGiPyBu81T42vM1tUd6n'"
+  },
+  "yunwang":{
+    "appkey": "23382671",
+    "appsecret": "14891ae2f39341dec73b28f1250910b0",
+    "REST_URL": "http://gw.api.taobao.com/router/rest"
   },
   "nodemailerTransporter": {
     "host": "smtpdm.aliyun.com",
