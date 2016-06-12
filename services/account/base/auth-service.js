@@ -67,64 +67,6 @@ module.exports = class AuthService {
     });
   }
 
-  // _isRevoked(req, res, next) {
-  //   let RevokeToken = mongoose.model('RevokeToken');
-  //   let headers = req.headers;
-  //   co(function*() {
-  //     let authorization = "";
-  //     if (!(headers.authorization && headers.authorization.split(' ')[0] === 'Bearer')) {
-  //       reject({
-  //         code: 500,
-  //         msg: "Not a valid token."
-  //       });
-  //     } else {
-  //       authorization = headers.authorization.split(' ')[1];
-  //     }
-  //     let decode = yield new Promise((resolve, reject) => {
-  //       jwt.verify(authorization, nconf.get('secret'), (err, decode) => {
-  //         if (err) {
-  //           reject({
-  //             code: 500,
-  //             msg: "Not a valid token."
-  //           });
-  //         } else {
-  //           resolve(decode);
-  //         }
-  //       });
-  //     });
-  //     let jti = decode.jti;
-  //     if (yield _isRevokedJwtId(jti)) {
-  //       next();
-  //     }
-  //   }).catch(err => {
-  //     console.log("Error: " + JSON.stringify(err));
-  //     res.json(err);
-  //   });
-  // }
-
-  // _isRevokedJwtId(jti) {
-  //   let RevokeToken = mongoose.model('RevokeToken');
-  //   if (!!!jti) {
-  //     return Promise.reject({
-  //       code: 500,
-  //       msg: "Args jti is required."
-  //     });
-  //   } else {
-  //     return new Promise((resolve, reject) => {
-  //       RevokeToken.findById(jti, (err, doc) => {
-  //         if (err || !!!doc || !doc.active) {
-  //           reject({
-  //             code: 500,
-  //             msg: "Not a valid token."
-  //           })
-  //         } else {
-  //           resolve(true);
-  //         }
-  //       });
-  //     });
-  //   }
-  // }
-
   _expressJwtRevoked(req, payload, done) {
     let jti = payload.jti;
     let RevokeToken = mongoose.model('RevokeToken');
@@ -140,39 +82,6 @@ module.exports = class AuthService {
       });
     }
   }
-
-  // _revokeToken(jti) {
-  //   let RevokeToken = mongoose.model('RevokeToken');
-  //   if (!!!jti) {
-  //     return Promise.reject({
-  //       code: 500,
-  //       msg: "Args jti is required."
-  //     });
-  //   } else {
-  //     return new Promise((resolve, reject) => {
-  //       RevokeToken.findById(jti, (err, doc) => {
-  //         if (err || !!!doc) {
-  //           reject({
-  //             code: 500,
-  //             msg: "No such a token id."
-  //           });
-  //         } else {
-  //           doc.active = false;
-  //           doc.save(err => {
-  //             if (err) {
-  //               reject({
-  //                 code: 500,
-  //                 msg: "Error: " + JSON.stringify(err)
-  //               });
-  //             } else {
-  //               resolve(true);
-  //             }
-  //           });
-  //         }
-  //       });
-  //     });
-  //   }
-  // }
 
   _errorHandler(err, req, res, next) {
     if (err && err.code !== 200) {
